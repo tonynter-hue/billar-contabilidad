@@ -61,7 +61,6 @@
       <div class="tarjeta-saldo-dorada">
         <span class="etiqueta-saldo">Saldo Disponible en Caja</span>
         <div class="cifra-saldo font-mono" id="boteSaldoTotal">0,00 €</div>
-        <p class="subtexto-saldo">Actualizado en tiempo real por Firestore</p>
       </div>
 
       <!-- Resumen de Totales -->
@@ -87,25 +86,36 @@
     </section>
 
     <!-- ==========================================
-         MÓDULO 4: SECCIÓN 2 - GASTOS Y FACTURAS
+         MÓDULO 4: SECCIÓN 2 - GASTOS E INGRESOS
          ========================================== -->
     <section id="sec-gastos" class="seccion">
       <!-- Panel de Registro exclusivo Admin -->
       <div class="panel-admin-box">
         <h3 class="panel-titulo">
-          <i data-lucide="receipt" class="w-5 h-5 text-gold-400"></i>
-          <span>Registrar Nuevo Gasto con Ticket</span>
+          <i data-lucide="arrow-left-right" class="w-5 h-5 text-gold-400"></i>
+          <span>Registrar Movimiento en Caja</span>
         </h3>
-        <form onsubmit="guardarNuevoGasto(event)" class="space-y-3">
+
+        <!-- Selector de Tipo: Gasto o Ingreso -->
+        <div class="tipo-mov-selector">
+          <button type="button" id="btnTipoGasto" class="btn-tipo-pill activo gasto" onclick="seleccionarTipoMov('gasto')">
+            📤 Registrar Gasto
+          </button>
+          <button type="button" id="btnTipoIngreso" class="btn-tipo-pill ingreso" onclick="seleccionarTipoMov('ingreso')">
+            📥 Registrar Ingreso / Bote
+          </button>
+        </div>
+
+        <form onsubmit="guardarNuevoMovimiento(event)" class="space-y-3 mt-3">
           <div>
-            <label class="form-label">Concepto de compra:</label>
-            <input type="text" id="gastoConcepto" class="form-input" placeholder="Ej: Tizas Máster, líquido de bolas, paño..." required />
+            <label class="form-label" id="lblConcepto">Concepto del gasto:</label>
+            <input type="text" id="gastoConcepto" class="form-input" placeholder="Ej: Paño Simonis, tizas, suelas..." required />
           </div>
 
           <div class="grid-2-col">
             <div>
               <label class="form-label">Importe (€):</label>
-              <input type="number" id="gastoImporte" class="form-input font-mono" step="0.01" min="0.01" placeholder="Ej: 14.50" required />
+              <input type="number" id="gastoImporte" class="form-input font-mono" step="0.01" min="0.01" placeholder="Ej: 50.00" required />
             </div>
             <div>
               <label class="form-label">Fecha:</label>
@@ -113,8 +123,9 @@
             </div>
           </div>
 
-          <div>
-            <label class="form-label">Ticket o Factura de compra:</label>
+          <!-- Campo de foto: visible principalmente para gastos -->
+          <div id="bloqueFotoTicket">
+            <label class="form-label">Ticket o Comprobante (Opcional en ingresos):</label>
             <input type="file" id="gastoFotoInput" accept="image/*" capture="environment" style="display: none;" onchange="procesarFotoTicket(event)" />
             <button type="button" class="btn-subir-foto" onclick="document.getElementById('gastoFotoInput').click()">
               <i data-lucide="camera" class="w-5 h-5"></i>
@@ -126,14 +137,14 @@
             </div>
           </div>
 
-          <button type="submit" class="btn-guardar-oro">Guardar Gasto en el Bote</button>
+          <button type="submit" id="btnGuardarMov" class="btn-guardar-oro">Guardar Gasto en Caja</button>
         </form>
       </div>
 
-      <!-- Listado de Facturas -->
+      <!-- Listado de Gastos e Ingresos -->
       <div class="felt-card p-4">
         <div class="card-header-flex">
-          <h2>Facturas y Justificantes</h2>
+          <h2>Historial de Gastos e Ingresos</h2>
           <span class="contador-badge" id="numGastosTotal">(0)</span>
         </div>
         <div id="listaGastosDetalle" class="space-y-3 mt-3"></div>
@@ -141,40 +152,40 @@
     </section>
 
     <!-- ==========================================
-         MÓDULO 5: SECCIÓN 3 - SOCIOS Y CUOTAS
+         MÓDULO 5: SECCIÓN 3 - BILLARISTAS
          ========================================== -->
     <section id="sec-socios" class="seccion">
       <!-- Panel de Gestión exclusivo Admin -->
       <div class="panel-admin-box">
         <h3 class="panel-titulo">
           <i data-lucide="user-plus" class="w-5 h-5 text-gold-400"></i>
-          <span>Alta de Socios y Cuotas</span>
+          <span>Alta de Billaristas</span>
         </h3>
         <form onsubmit="agregarSocio(event)" class="flex-input-btn">
-          <input type="text" id="nuevoSocioNombre" class="form-input flex-1" placeholder="Nombre completo del socio..." required />
+          <input type="text" id="nuevoSocioNombre" class="form-input flex-1" placeholder="Nombre completo del billarista..." required />
           <button type="submit" class="btn-guardar-oro px-4">Añadir</button>
         </form>
         <button type="button" class="btn-reiniciar mt-3" onclick="reiniciarCuotas()">
-          🔄 Poner todas las cuotas en Pendiente (Nuevo mes)
+          🔄 Poner a todos en Pendiente (Nueva compra / aportación)
         </button>
       </div>
 
-      <!-- Resumen Cuotas -->
+      <!-- Resumen Cuotas / Aportaciones -->
       <div class="grid-resumen">
         <div class="felt-card card-kpi">
-          <span class="kpi-titulo text-emerald-300">Cuotas al Día</span>
+          <span class="kpi-titulo text-emerald-300">Aportación al Día</span>
           <div class="kpi-valor font-mono text-emerald-400" id="numSociosPagados">0</div>
         </div>
         <div class="felt-card card-kpi">
-          <span class="kpi-titulo text-amber-300">Cuotas Pendientes</span>
+          <span class="kpi-titulo text-amber-300">Pendientes</span>
           <div class="kpi-valor font-mono text-amber-400" id="numSociosPendientes">0</div>
         </div>
       </div>
 
-      <!-- Listado de Socios -->
+      <!-- Listado de Billaristas -->
       <div class="felt-card p-4">
         <div class="card-header-flex">
-          <h2>Lista de Socios</h2>
+          <h2>Lista de Billaristas</h2>
           <span class="contador-badge" id="totalSociosNum">(0)</span>
         </div>
         <div id="contenedorListaSocios" class="space-y-2 mt-3"></div>
@@ -238,11 +249,11 @@
     </button>
     <button class="nav-btn" onclick="cambiarSeccion('gastos', this)">
       <i data-lucide="receipt" class="w-5 h-5"></i>
-      <span>Gastos</span>
+      <span>Gastos/Ingr.</span>
     </button>
     <button class="nav-btn" onclick="cambiarSeccion('socios', this)">
       <i data-lucide="users" class="w-5 h-5"></i>
-      <span>Socios</span>
+      <span>Billaristas</span>
     </button>
     <button class="nav-btn" onclick="cambiarSeccion('votaciones', this)">
       <i data-lucide="vote" class="w-5 h-5"></i>

@@ -303,7 +303,7 @@ body.admin-activo .btn-borrar-item {
 }
 
 /* ==========================================
-   MÓDULO 5: FORMULARIOS Y GASTOS CON TICKETS
+   MÓDULO 5: FORMULARIOS Y GASTOS/INGRESOS CON TICKETS
    ========================================== */
 .panel-admin-box {
   display: none;
@@ -327,6 +327,39 @@ body.admin-activo .panel-admin-box {
   align-items: center;
   gap: 8px;
   margin-bottom: 12px;
+}
+
+/* Selector táctil Gasto / Ingreso */
+.tipo-mov-selector {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.btn-tipo-pill {
+  padding: 10px 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  text-transform: uppercase;
+  background-color: var(--bg-inner);
+  border: 1.5px solid rgba(255, 255, 255, 0.2);
+  color: rgba(203, 213, 225, 0.7);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-tipo-pill.activo.gasto {
+  background-color: rgba(248, 113, 113, 0.2);
+  border-color: var(--rojo-gasto);
+  color: var(--rojo-gasto);
+}
+
+.btn-tipo-pill.activo.ingreso {
+  background-color: rgba(52, 211, 153, 0.2);
+  border-color: var(--verde-dinero);
+  color: var(--verde-dinero);
 }
 
 .form-label {
