@@ -1,0 +1,767 @@
+/* ==========================================
+   MÓDULO 1: VARIABLES Y BASE VISUAL CLUB
+   ========================================== */
+:root {
+  --bg-deep: #03130d;
+  --bg-felt: #072218;
+  --bg-inner: #04140e;
+  --border-green: rgba(16, 185, 129, 0.25);
+  --gold-primary: #d4af37;
+  --gold-bright: #facc15;
+  --verde-dinero: #34d399;
+  --rojo-gasto: #f87171;
+  --font-base: "Inter", "Segoe UI", Arial, sans-serif;
+  --font-display: "Cinzel", serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-deep);
+  background-image: radial-gradient(circle at 50% 0%, #0c3826 0%, var(--bg-deep) 90%);
+  color: #ffffff;
+  font-family: var(--font-base);
+  font-size: 16px;
+  min-height: 100vh;
+  padding-bottom: 90px;
+}
+
+.font-mono {
+  font-family: var(--font-base) !important;
+  font-variant-numeric: tabular-nums !important;
+  font-feature-settings: "tnum" 1, "zero" 0 !important;
+  letter-spacing: 0.03em;
+}
+
+/* ==========================================
+   MÓDULO 2: CABECERA Y BOTÓN ADMIN
+   ========================================== */
+#main-header {
+  background-color: rgba(7, 34, 24, 0.95);
+  border-bottom: 1.5px solid rgba(212, 175, 55, 0.35);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  backdrop-filter: blur(8px);
+}
+
+.header-container {
+  max-width: 750px;
+  margin: 0 auto;
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.club-logo {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  border: 1px solid rgba(212, 175, 55, 0.4);
+  object-fit: cover;
+}
+
+.brand-text h1 {
+  font-family: var(--font-display);
+  font-size: 19px;
+  font-weight: 800;
+  color: var(--gold-bright);
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+}
+
+.brand-text span {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(212, 175, 55, 0.9);
+}
+
+.btn-admin-pill {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(4, 20, 14, 0.85);
+  border: 1.5px solid rgba(212, 175, 55, 0.5);
+  color: var(--gold-bright);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-admin-pill.admin-on {
+  background-color: var(--gold-primary);
+  color: var(--bg-inner);
+  border-color: #ffffff;
+  font-weight: 800;
+}
+
+.banner-admin {
+  display: none;
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 8px 12px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  border-bottom: 1.5px solid #f87171;
+}
+
+body.admin-activo .banner-admin {
+  display: block;
+}
+
+/* ==========================================
+   MÓDULO 3: CONTENEDOR PRINCIPAL Y TARJETAS
+   ========================================== */
+main {
+  max-width: 750px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.seccion {
+  display: none;
+}
+
+.seccion.activa {
+  display: block;
+  animation: fadeIn 0.15s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.felt-card {
+  background-color: var(--bg-felt);
+  border: 1px solid var(--border-green);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+}
+
+.felt-card.border-gold {
+  border: 2px solid var(--gold-primary) !important;
+}
+
+.card-header-flex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-header-flex h2 {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.contador-badge {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.p-4 { padding: 1rem; }
+.mb-4 { margin-bottom: 1rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 0.75rem; }
+.space-y-2 > * + * { margin-top: 0.5rem; }
+.space-y-3 > * + * { margin-top: 0.75rem; }
+.space-y-4 > * + * { margin-top: 1rem; }
+
+/* ==========================================
+   MÓDULO 4: ESTILOS SECCIÓN BOTE
+   ========================================== */
+.tarjeta-saldo-dorada {
+  background: linear-gradient(135deg, #0c3826 0%, #04140e 100%);
+  border: 2px solid var(--gold-primary);
+  border-radius: 16px;
+  padding: 24px 16px;
+  text-align: center;
+  margin-bottom: 16px;
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+}
+
+.etiqueta-saldo {
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--gold-bright);
+}
+
+.cifra-saldo {
+  font-size: 48px;
+  font-weight: 900;
+  color: #ffffff;
+  margin: 6px 0;
+  line-height: 1;
+}
+
+.subtexto-saldo {
+  font-size: 13px;
+  color: rgba(203, 213, 225, 0.8);
+}
+
+.grid-resumen {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.card-kpi {
+  padding: 14px;
+  text-align: center;
+  border: 1.5px solid rgba(16, 185, 129, 0.3);
+}
+
+.kpi-titulo {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.kpi-valor {
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.lista-movimientos {
+  list-style: none;
+  margin-top: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.item-movimiento {
+  background-color: var(--bg-inner);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.mov-concepto {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+  display: block;
+}
+
+.mov-fecha {
+  font-size: 13px;
+  color: rgba(203, 213, 225, 0.7);
+}
+
+.mov-importe {
+  font-size: 18px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.mov-importe.ingreso { color: var(--verde-dinero); }
+.mov-importe.gasto { color: var(--rojo-gasto); }
+
+.btn-borrar-item {
+  display: none;
+  background-color: rgba(248, 113, 113, 0.15);
+  border: 1px solid var(--rojo-gasto);
+  color: var(--rojo-gasto);
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 5px 8px;
+  margin-left: 10px;
+  cursor: pointer;
+}
+
+body.admin-activo .btn-borrar-item {
+  display: inline-block;
+}
+
+/* ==========================================
+   MÓDULO 5: FORMULARIOS Y GASTOS CON TICKETS
+   ========================================== */
+.panel-admin-box {
+  display: none;
+  background-color: var(--bg-felt);
+  border: 2px solid var(--gold-primary);
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+body.admin-activo .panel-admin-box {
+  display: block;
+}
+
+.panel-titulo {
+  font-family: var(--font-display);
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--gold-bright);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.form-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: rgba(203, 213, 225, 0.9);
+  margin-bottom: 4px;
+}
+
+.form-input {
+  width: 100%;
+  background-color: var(--bg-inner);
+  border: 1px solid rgba(16, 185, 129, 0.4);
+  color: #ffffff;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 16px;
+  outline: none;
+}
+
+.form-input:focus {
+  border-color: var(--gold-primary);
+}
+
+.grid-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-subir-foto {
+  width: 100%;
+  background-color: var(--bg-inner);
+  border: 1.5px dashed rgba(212, 175, 55, 0.6);
+  color: var(--gold-bright);
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.preview-box {
+  display: none;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.preview-box img {
+  max-height: 160px;
+  border-radius: 8px;
+  border: 1px solid var(--gold-primary);
+}
+
+.btn-quitar-foto {
+  background: none;
+  border: none;
+  color: var(--rojo-gasto);
+  font-size: 13px;
+  font-weight: 700;
+  margin-top: 4px;
+  cursor: pointer;
+}
+
+.btn-guardar-oro {
+  width: 100%;
+  background: linear-gradient(135deg, var(--gold-primary), #b48a1e);
+  color: var(--bg-inner);
+  font-size: 15px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 12px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+
+.tarjeta-gasto {
+  background-color: var(--bg-inner);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.miniatura-ticket {
+  width: 54px;
+  height: 54px;
+  border-radius: 8px;
+  border: 1.5px solid var(--gold-primary);
+  background-color: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.miniatura-ticket img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ==========================================
+   MÓDULO 6: ESTILOS SECCIÓN SOCIOS
+   ========================================== */
+.flex-input-btn {
+  display: flex;
+  gap: 8px;
+}
+
+.flex-1 { flex: 1; }
+.px-4 { padding-left: 1rem; padding-right: 1rem; width: auto; }
+
+.btn-reiniciar {
+  width: 100%;
+  background-color: rgba(4, 20, 14, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.8);
+  padding: 8px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tarjeta-socio {
+  background-color: var(--bg-inner);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.socio-nombre {
+  font-size: 16px;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.badge-estado {
+  font-size: 13px;
+  font-weight: 800;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  cursor: default;
+}
+
+.badge-estado.pagado {
+  background-color: rgba(52, 211, 153, 0.15);
+  color: var(--verde-dinero);
+  border-color: rgba(52, 211, 153, 0.4);
+}
+
+.badge-estado.pendiente {
+  background-color: rgba(251, 191, 36, 0.15);
+  color: #facc15;
+  border-color: rgba(251, 191, 36, 0.4);
+}
+
+body.admin-activo .badge-estado {
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+}
+
+/* ==========================================
+   MÓDULO 7: ESTILOS SECCIÓN VOTACIONES
+   ========================================== */
+.solo-admin {
+  display: none;
+}
+
+body.admin-activo .solo-admin {
+  display: block;
+}
+
+.tarjeta-votacion {
+  background-color: var(--bg-inner);
+  border: 1.5px solid rgba(16, 185, 129, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.votacion-titulo {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--gold-bright);
+}
+
+.votacion-desc {
+  font-size: 14px;
+  color: rgba(203, 213, 225, 0.9);
+  margin: 6px 0 10px 0;
+  line-height: 1.4;
+}
+
+.votacion-limite-tag {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.barra-votos {
+  width: 100%;
+  height: 14px;
+  background-color: rgba(248, 113, 113, 0.3);
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.barra-votos-favor {
+  height: 100%;
+  background-color: var(--verde-dinero);
+  transition: width 0.3s;
+}
+
+.votos-recuento {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+.grid-votar {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.btn-voto {
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 800;
+  cursor: pointer;
+  border: none;
+}
+
+.btn-voto.favor {
+  background-color: rgba(52, 211, 153, 0.2);
+  color: var(--verde-dinero);
+  border: 1px solid var(--verde-dinero);
+}
+
+.btn-voto.contra {
+  background-color: rgba(248, 113, 113, 0.2);
+  color: var(--rojo-gasto);
+  border: 1px solid var(--rojo-gasto);
+}
+
+.btn-voto:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.admin-cambiar-fecha {
+  display: none;
+  background-color: var(--bg-felt);
+  border: 1px dashed var(--gold-primary);
+  border-radius: 8px;
+  padding: 8px;
+  margin-bottom: 12px;
+}
+
+body.admin-activo .admin-cambiar-fecha {
+  display: block;
+}
+
+/* ==========================================
+   MÓDULO 8: MODALES Y VISORES
+   ========================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.85);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+  backdrop-filter: blur(4px);
+}
+
+.modal-overlay.activo { display: flex; }
+
+.modal-pin-box {
+  background-color: var(--bg-felt);
+  border: 2px solid var(--gold-primary);
+  border-radius: 16px;
+  max-width: 340px;
+  width: 100%;
+  padding: 24px;
+  text-align: center;
+}
+
+.icon-shield-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background-color: rgba(212, 175, 55, 0.15);
+  border: 1.5px solid var(--gold-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px auto;
+}
+
+.pin-input {
+  width: 140px;
+  margin: 12px auto 0 auto;
+  text-align: center;
+  background-color: var(--bg-inner);
+  border: 2px solid var(--gold-primary);
+  color: #ffffff;
+  font-size: 26px;
+  letter-spacing: 8px;
+  padding: 8px;
+  border-radius: 10px;
+  outline: none;
+}
+
+.pin-error-txt {
+  color: var(--rojo-gasto);
+  font-size: 13px;
+  font-weight: 700;
+  min-height: 20px;
+  margin-top: 6px;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-cancelar {
+  background-color: #1e293b;
+  color: #cbd5e1;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.modal-visor {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 16px;
+}
+
+.modal-visor.activo { display: flex; }
+
+.modal-visor img {
+  max-width: 95%;
+  max-height: 75vh;
+  border-radius: 10px;
+  border: 2px solid var(--gold-primary);
+}
+
+.btn-cerrar-visor {
+  margin-top: 16px;
+  background-color: #ffffff;
+  color: #000;
+  font-size: 16px;
+  font-weight: 800;
+  padding: 10px 24px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+/* ==========================================
+   MÓDULO 9: BARRA INFERIOR FIJA
+   ========================================== */
+nav.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(7, 34, 24, 0.98);
+  border-top: 1.5px solid rgba(212, 175, 55, 0.35);
+  display: flex;
+  justify-content: space-around;
+  z-index: 40;
+  backdrop-filter: blur(8px);
+}
+
+.nav-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  border-top: 3.5px solid transparent;
+  color: rgba(203, 213, 225, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 4px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 58px;
+  transition: all 0.15s;
+}
+
+.nav-btn.active {
+  color: var(--gold-bright);
+  border-top-color: var(--gold-primary);
+  background-color: rgba(212, 175, 55, 0.08);
+}

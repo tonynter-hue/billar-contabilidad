@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Club Elcano · Contabilidad y Bote</title>
+
+  <!-- PWA y Accesos Móviles -->
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#072218" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <link rel="icon" type="image/png" sizes="192x192" href="logo-192.png" />
+
+  <!-- Tipografías de alta legibilidad -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+
+  <!-- Iconos Lucide -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+
+  <!-- Estilos del Club -->
+  <link rel="stylesheet" href="estilos.css" />
+</head>
+<body class="selection:bg-gold-500 selection:text-baize-950">
+
+  <!-- ==========================================
+       MÓDULO 1: CABECERA DEL CLUB Y BOTÓN ADMIN
+       ========================================== -->
+  <header id="main-header">
+    <div class="header-container">
+      <div class="header-brand">
+        <img src="logo-192.png" alt="Club Elcano" class="club-logo" />
+        <div class="brand-text">
+          <h1>CLUB ELCANO</h1>
+          <span id="headerSubtitulo">Bote y Saldo Actual</span>
+        </div>
+      </div>
+
+      <button id="btnAdmin" class="btn-admin-pill" onclick="clickBotonAdmin()">
+        <i id="iconAdmin" data-lucide="lock" class="w-4 h-4"></i>
+        <span id="textAdmin">Acceso PIN</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ==========================================
+       MÓDULO 2: BANNER AVISO MODO ADMIN
+       ========================================== -->
+  <div id="bannerAdmin" class="banner-admin">
+    ⚠️ MODO ADMINISTRADOR ACTIVO (Edición y altas permitidas)
+  </div>
+
+  <main>
+    <!-- ==========================================
+         MÓDULO 3: SECCIÓN 1 - BOTE Y CAJA
+         ========================================== -->
+    <section id="sec-bote" class="seccion activa">
+      <!-- Tarjeta Saldo Principal -->
+      <div class="tarjeta-saldo-dorada">
+        <span class="etiqueta-saldo">Saldo Disponible en Caja</span>
+        <div class="cifra-saldo font-mono" id="boteSaldoTotal">0,00 €</div>
+        <p class="subtexto-saldo">Actualizado en tiempo real por Firestore</p>
+      </div>
+
+      <!-- Resumen de Totales -->
+      <div class="grid-resumen">
+        <div class="felt-card card-kpi">
+          <span class="kpi-titulo text-emerald-300">Total Ingresos</span>
+          <div class="kpi-valor font-mono text-emerald-400" id="boteTotalIngresos">+0,00 €</div>
+        </div>
+        <div class="felt-card card-kpi">
+          <span class="kpi-titulo text-rose-300">Total Gastos</span>
+          <div class="kpi-valor font-mono text-rose-400" id="boteTotalGastos">-0,00 €</div>
+        </div>
+      </div>
+
+      <!-- Movimientos Recientes -->
+      <div class="felt-card p-4">
+        <div class="card-header-flex">
+          <h2>Últimos Movimientos</h2>
+          <span class="contador-badge" id="boteNumMovs">(0)</span>
+        </div>
+        <ul class="lista-movimientos" id="listaMovimientosBote"></ul>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         MÓDULO 4: SECCIÓN 2 - GASTOS Y FACTURAS
+         ========================================== -->
+    <section id="sec-gastos" class="seccion">
+      <!-- Panel de Registro exclusivo Admin -->
+      <div class="panel-admin-box">
+        <h3 class="panel-titulo">
+          <i data-lucide="receipt" class="w-5 h-5 text-gold-400"></i>
+          <span>Registrar Nuevo Gasto con Ticket</span>
+        </h3>
+        <form onsubmit="guardarNuevoGasto(event)" class="space-y-3">
+          <div>
+            <label class="form-label">Concepto de compra:</label>
+            <input type="text" id="gastoConcepto" class="form-input" placeholder="Ej: Tizas Máster, líquido de bolas, paño..." required />
+          </div>
+
+          <div class="grid-2-col">
+            <div>
+              <label class="form-label">Importe (€):</label>
+              <input type="number" id="gastoImporte" class="form-input font-mono" step="0.01" min="0.01" placeholder="Ej: 14.50" required />
+            </div>
+            <div>
+              <label class="form-label">Fecha:</label>
+              <input type="date" id="gastoFecha" class="form-input font-mono" required />
+            </div>
+          </div>
+
+          <div>
+            <label class="form-label">Ticket o Factura de compra:</label>
+            <input type="file" id="gastoFotoInput" accept="image/*" capture="environment" style="display: none;" onchange="procesarFotoTicket(event)" />
+            <button type="button" class="btn-subir-foto" onclick="document.getElementById('gastoFotoInput').click()">
+              <i data-lucide="camera" class="w-5 h-5"></i>
+              <span>Hacer foto con el móvil o elegir ticket</span>
+            </button>
+            <div id="vistaPreviaTicket" class="preview-box">
+              <img id="imgPrevia" src="" alt="Vista previa" />
+              <button type="button" onclick="quitarFotoTicket()" class="btn-quitar-foto">Eliminar foto seleccionada</button>
+            </div>
+          </div>
+
+          <button type="submit" class="btn-guardar-oro">Guardar Gasto en el Bote</button>
+        </form>
+      </div>
+
+      <!-- Listado de Facturas -->
+      <div class="felt-card p-4">
+        <div class="card-header-flex">
+          <h2>Facturas y Justificantes</h2>
+          <span class="contador-badge" id="numGastosTotal">(0)</span>
+        </div>
+        <div id="listaGastosDetalle" class="space-y-3 mt-3"></div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         MÓDULO 5: SECCIÓN 3 - SOCIOS Y CUOTAS
+         ========================================== -->
+    <section id="sec-socios" class="seccion">
+      <!-- Panel de Gestión exclusivo Admin -->
+      <div class="panel-admin-box">
+        <h3 class="panel-titulo">
+          <i data-lucide="user-plus" class="w-5 h-5 text-gold-400"></i>
+          <span>Alta de Socios y Cuotas</span>
+        </h3>
+        <form onsubmit="agregarSocio(event)" class="flex-input-btn">
+          <input type="text" id="nuevoSocioNombre" class="form-input flex-1" placeholder="Nombre completo del socio..." required />
+          <button type="submit" class="btn-guardar-oro px-4">Añadir</button>
+        </form>
+        <button type="button" class="btn-reiniciar mt-3" onclick="reiniciarCuotas()">
+          🔄 Poner todas las cuotas en Pendiente (Nuevo mes)
+        </button>
+      </div>
+
+      <!-- Resumen Cuotas -->
+      <div class="grid-resumen">
+        <div class="felt-card card-kpi">
+          <span class="kpi-titulo text-emerald-300">Cuotas al Día</span>
+          <div class="kpi-valor font-mono text-emerald-400" id="numSociosPagados">0</div>
+        </div>
+        <div class="felt-card card-kpi">
+          <span class="kpi-titulo text-amber-300">Cuotas Pendientes</span>
+          <div class="kpi-valor font-mono text-amber-400" id="numSociosPendientes">0</div>
+        </div>
+      </div>
+
+      <!-- Listado de Socios -->
+      <div class="felt-card p-4">
+        <div class="card-header-flex">
+          <h2>Lista de Socios</h2>
+          <span class="contador-badge" id="totalSociosNum">(0)</span>
+        </div>
+        <div id="contenedorListaSocios" class="space-y-2 mt-3"></div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         MÓDULO 6: SECCIÓN 4 - PROPUESTAS Y VOTACIONES
+         ========================================== -->
+    <section id="sec-votaciones" class="seccion">
+      <!-- Formulario para que CUALQUIER SOCIO proponga -->
+      <div class="felt-card p-4 mb-4 border-gold">
+        <h3 class="panel-titulo">
+          <i data-lucide="lightbulb" class="w-5 h-5 text-gold-400"></i>
+          <span>Proponer una Compra o Decisión</span>
+        </h3>
+        <form onsubmit="crearPropuesta(event)" class="space-y-3 mt-2">
+          <div>
+            <label class="form-label">¿Qué propones comprar o decidir?:</label>
+            <input type="text" id="propuestaTitulo" class="form-input" placeholder="Ej: Juego de bolas Aramith, renovación de taqueras..." required />
+          </div>
+
+          <div>
+            <label class="form-label">Detalles / Precio estimado:</label>
+            <textarea id="propuestaDesc" class="form-input" rows="2" placeholder="Ej: Cuestan unos 80€ en Billares Sevilla y mejorarán la mesa." required></textarea>
+          </div>
+
+          <!-- Si es Admin puede fijar la fecha al momento -->
+          <div id="grupoFechaAdmin" class="solo-admin">
+            <label class="form-label text-gold-400">Fecha límite de votación (Admin):</label>
+            <input type="date" id="propuestaLimite" class="form-input font-mono" />
+          </div>
+
+          <!-- Aviso visible para socios normales -->
+          <p id="avisoFechaSocio" class="text-xs text-slate-300">
+            📅 La fecha límite de votación la establecerá el administrador al revisarla.
+          </p>
+
+          <button type="submit" class="btn-guardar-oro">Publicar Propuesta para Votación</button>
+        </form>
+      </div>
+
+      <!-- Listado de Propuestas -->
+      <div class="felt-card p-4">
+        <div class="card-header-flex">
+          <h2>Propuestas en Votación</h2>
+          <span class="contador-badge" id="numVotacionesTotal">(0)</span>
+        </div>
+        <div id="contenedorVotaciones" class="space-y-4 mt-3"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================
+       MÓDULO 7: BARRA DE NAVEGACIÓN INFERIOR
+       ========================================== -->
+  <nav class="bottom-nav">
+    <button class="nav-btn active" onclick="cambiarSeccion('bote', this)">
+      <i data-lucide="wallet" class="w-5 h-5"></i>
+      <span>Bote</span>
+    </button>
+    <button class="nav-btn" onclick="cambiarSeccion('gastos', this)">
+      <i data-lucide="receipt" class="w-5 h-5"></i>
+      <span>Gastos</span>
+    </button>
+    <button class="nav-btn" onclick="cambiarSeccion('socios', this)">
+      <i data-lucide="users" class="w-5 h-5"></i>
+      <span>Socios</span>
+    </button>
+    <button class="nav-btn" onclick="cambiarSeccion('votaciones', this)">
+      <i data-lucide="vote" class="w-5 h-5"></i>
+      <span>Votaciones</span>
+    </button>
+  </nav>
+
+  <!-- ==========================================
+       MÓDULO 8: MODAL VISOR DE TICKET AMPLIADO
+       ========================================== -->
+  <div id="modalVisor" class="modal-visor" onclick="cerrarVisor()">
+    <img id="imgVisorCompleta" src="" alt="Ticket Ampliado" onclick="event.stopPropagation()" />
+    <button class="btn-cerrar-visor" onclick="cerrarVisor()">✕ Cerrar Ticket</button>
+  </div>
+
+  <!-- ==========================================
+       MÓDULO 9: MODAL INTRODUCCIÓN DE PIN (9292)
+       ========================================== -->
+  <div id="modalPin" class="modal-overlay">
+    <div class="modal-pin-box">
+      <div class="icon-shield-wrap">
+        <i data-lucide="shield-check" class="w-7 h-7 text-gold-400"></i>
+      </div>
+      <h3>Acceso Administrador</h3>
+      <p>Introduce las 4 cifras del PIN del Club</p>
+
+      <input type="password" id="inputPinAdmin" maxlength="4" placeholder="••••" class="pin-input font-mono" />
+      <div id="pinError" class="pin-error-txt"></div>
+
+      <div class="flex-center gap-2 mt-4">
+        <button type="button" onclick="cerrarModalPin()" class="btn-cancelar">Cancelar</button>
+        <button type="button" onclick="verificarPinAdmin()" class="btn-guardar-oro px-5">Desbloquear</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Librerías oficiales Firebase Firestore (las mismas del torneo) -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+
+  <!-- Script de la aplicación -->
+  <script src="script.js"></script>
+</body>
+</html>
