@@ -17,7 +17,7 @@ if (!firebase.apps.length) {
 const db = firebase.firestore();
 
 // Mismo PIN de administrador oficial del torneo
-const ADMIN_PIN = "9292";
+const ADMIN_PIN = "1234";
 let modoAdmin = false;
 let fotoTicketBase64 = "";
 
