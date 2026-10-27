@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Club Elcano · Contabilidad y Bote</title>
+  <title>Billar Elcano · Contabilidad</title>
 
   <!-- PWA y Accesos Móviles -->
   <link rel="manifest" href="manifest.json" />
@@ -31,23 +31,29 @@
   <header id="main-header">
     <div class="header-container">
       <div class="header-brand">
-        <img src="logo-192.png" alt="Club Elcano" class="club-logo" />
+        <img src="logo-192.png" alt="Billar Elcano" class="club-logo" />
         <div class="brand-text">
-          <h1>CLUB ELCANO</h1>
-          <span id="headerSubtitulo">Bote y Saldo Actual</span>
+          <h1>BILLAR ELCANO</h1>
+          <span id="headerSubtitulo">Saldo Actual</span>
         </div>
       </div>
 
-      <button id="btnAdmin" class="btn-admin-pill" onclick="clickBotonAdmin()">
-        <i id="iconAdmin" data-lucide="lock" class="w-4 h-4"></i>
-        <span id="textAdmin">Acceso PIN</span>
-      </button>
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <button id="btnExportarPDF" class="btn-exportar-pill" onclick="generarInformePDF()" title="Descargar balance en PDF">
+          <i data-lucide="file-text" class="w-4 h-4"></i>
+          <span>Informe PDF</span>
+        </button>
+
+        <button id="btnAdmin" class="btn-admin-pill" onclick="clickBotonAdmin()">
+          <i id="iconAdmin" data-lucide="lock" class="w-4 h-4"></i>
+          <span id="textAdmin">Acceso PIN</span>
+        </button>
+      </div>
     </div>
   </header>
   <!-- ============================================================ -->
   <!-- FIN MÓDULO 1: CABECERA Y BOTÓN ADMIN                        -->
   <!-- ============================================================ -->
-
 
   <!-- ============================================================ -->
   <!-- INICIO MÓDULO 2: BANNER AVISO MODO ADMIN                    -->
@@ -280,9 +286,60 @@
     <!-- ============================================================ -->
     <!-- FIN MÓDULO 6: SECCIÓN 4 - PROPUESTAS Y VOTACIONES           -->
     <!-- ============================================================ -->
-  </main>
 
+   <!-- ============================================================ -->
+    <!-- INICIO MÓDULO 11: PLANTILLA DE IMPRESIÓN Y EXPORTACIÓN PDF  -->
+    <!-- ============================================================ -->
+    <div id="informeImpresionPDF" class="solo-impresion">
+      <div class="print-header">
+        <div>
+          <h1 class="print-titulo">BILLAR ELCANO</h1>
+          <p class="print-subtitulo">Informe de Tesorería, Estado de Cuentas</p>
+          <p class="print-subtitulo">Calle Goleta, 3 · Sevilla</p>
+        </div>
+        <div class="print-fecha" id="printFechaEmision"></div>
+      </div>
 
+      <div class="print-resumen-grid">
+        <div class="print-kpi-box">
+          <span class="print-kpi-lbl">Saldo Disponible en Caja</span>
+          <div class="print-kpi-val" id="printSaldoActual">0,00 €</div>
+        </div>
+        <div class="print-kpi-box">
+          <span class="print-kpi-lbl">Total Ingresos Acumulados</span>
+          <div class="print-kpi-val print-verde" id="printTotalIngresos">+0,00 €</div>
+        </div>
+        <div class="print-kpi-box">
+          <span class="print-kpi-lbl">Total Gastos Acumulados</span>
+          <div class="print-kpi-val print-rojo" id="printTotalGastos">-0,00 €</div>
+        </div>
+      </div>
+
+      <h3 class="print-sec-titulo">1. Estado de Aportaciones de Billaristas</h3>
+      <div id="printGridSocios" class="print-socios-grid"></div>
+
+      <h3 class="print-sec-titulo mt-4">2. Historial de Asientos Contables y Movimientos</h3>
+      <table class="print-tabla">
+        <thead>
+          <tr>
+            <th style="width: 15%;">Fecha</th>
+            <th style="width: 15%;">Tipo</th>
+            <th>Concepto / Detalle</th>
+            <th style="width: 20%; text-align: right;">Importe</th>
+          </tr>
+        </thead>
+        <tbody id="printTablaMovimientos"></tbody>
+      </table>
+
+      <div class="print-footer">
+        Documento oficial generado desde la aplicación de Tesorería de Billar Elcano.
+      </div>
+    </div>
+    <!-- ============================================================ -->
+    <!-- FIN MÓDULO 11: PLANTILLA DE IMPRESIÓN Y EXPORTACIÓN PDF     -->
+    <!-- ============================================================ -->
+
+    
   <!-- ============================================================ -->
   <!-- INICIO MÓDULO 7: BARRA DE NAVEGACIÓN INFERIOR               -->
   <!-- ============================================================ -->

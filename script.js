@@ -15,7 +15,7 @@ if (typeof firebase !== 'undefined' && !firebase.apps.length) {
 }
 const db = (typeof firebase !== 'undefined') ? firebase.firestore() : null;
 
-const ADMIN_PIN = "1234";
+const ADMIN_PIN = "6133";
 let modoAdmin = false;
 let fotoTicketBase64 = "";
 
@@ -126,7 +126,7 @@ function formatearFecha(fechaStr) {
 // INICIO MÓDULO 3: NAVEGACIÓN ENTRE PESTAÑAS
 // ============================================================
 const TITULOS_SECCION = {
-  bote: "Bote y Saldo Actual",
+  bote: "Saldo Actual",
   gastos: "Gastos e Ingresos",
   socios: "Billaristas y Aportaciones",
   votaciones: "Propuestas y Votaciones"
@@ -546,7 +546,6 @@ function reiniciarCuotas() {
 // ============================================================
 function actualizarAvisosVotacion() {
   const votaciones = appData.votaciones || [];
-  // Cuenta cuántas propuestas activas no ha votado todavía este billarista
   let pendientes = 0;
   votaciones.forEach(prop => {
     if (!localStorage.getItem(`voto_propuesta_${prop.id}`)) {
@@ -724,12 +723,11 @@ function crearPropuesta(event) {
   document.getElementById('propuestaTitulo').value = '';
   document.getElementById('propuestaDesc').value = '';
 
-  // Pregunta si se quiere avisar al grupo de WhatsApp
   const urlApp = window.location.href;
   const avisarWhatsApp = confirm("✅ Propuesta publicada correctamente.\n\n¿Quieres enviar un aviso al grupo de WhatsApp del billar?");
   if (avisarWhatsApp) {
     const mensaje = encodeURIComponent(
-      `🎱 *Club Elcano · Nueva Propuesta de Compra*\n\n` +
+      `🎱 *Billar Elcano · Nueva Propuesta de Compra*\n\n` +
       `💡 *Propuesta:* ${titulo}\n` +
       `📝 *Detalles:* ${desc}\n\n` +
       `🗳️ ¡Entra en la app a emitir tu voto!\n👉 ${urlApp}`
@@ -765,7 +763,6 @@ function eliminarPropuesta(id) {
 // ============================================================
 // FIN MÓDULO 7: SECCIÓN 4 - PROPUESTAS Y VOTACIONES           
 // ============================================================
-
 
 // ============================================================
 // INICIO MÓDULO 8: CONTROL DE PIN Y ADMINISTRADOR             
@@ -829,8 +826,81 @@ document.addEventListener("DOMContentLoaded", () => {
   establecerFechaHoy();
   cargarCopiaLocal();
   initRealtimeSync();
+
+  // Registro del Service Worker para funcionamiento PWA
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Service Worker registrado:', reg.scope))
+      .catch(err => console.warn('Fallo Service Worker:', err));
+  }
+
   if (window.lucide) lucide.createIcons();
 });
 // ============================================================
 // FIN MÓDULO 9: INICIALIZACIÓN                                
+// ============================================================
+
+// ============================================================
+// INICIO MÓDULO 10: EXPORTACIÓN DE INFORME PDF
+// ============================================================
+function generarInformePDF() {
+  if (!modoAdmin) {
+    clickBotonAdmin();
+    return;
+  }
+
+  const movs = appData.movimientos || [];
+  let totalIngresos = 0, totalGastos = 0;
+
+  movs.forEach(m => {
+    if (m.tipo === 'ingreso') totalIngresos += Number(m.importe);
+    if (m.tipo === 'gasto') totalGastos += Number(m.importe);
+  });
+
+  const saldoActual = (appData.saldoInicial || 0) + totalIngresos - totalGastos;
+  const ahora = new Date();
+  const fechaStr = ahora.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const horaStr = ahora.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+
+  // 1. Cabecera y saldos
+  document.getElementById('printFechaEmision').innerHTML = `Fecha: ${fechaStr}<br>Hora: ${horaStr}`;
+  document.getElementById('printSaldoActual').textContent = formatearEuro(saldoActual);
+  document.getElementById('printTotalIngresos').textContent = '+' + formatearEuro(totalIngresos);
+  document.getElementById('printTotalGastos').textContent = '-' + formatearEuro(totalGastos);
+
+  // 2. Estado de Socios
+  const contenedorSocios = document.getElementById('printGridSocios');
+  contenedorSocios.innerHTML = '';
+  (appData.socios || []).forEach(s => {
+    const div = document.createElement('div');
+    const pag = s.estado === 'pagado';
+    div.className = `print-socio-item ${pag ? 'pagado' : 'pendiente'}`;
+    div.innerHTML = `<span>${s.nombre}</span> <span>${pag ? '✓ Pagado' : '⏳ Pend.'}</span>`;
+    contenedorSocios.appendChild(div);
+  });
+
+  // 3. Tabla de Asientos
+  const cuerpoTabla = document.getElementById('printTablaMovimientos');
+  cuerpoTabla.innerHTML = '';
+  if (movs.length === 0) {
+    cuerpoTabla.innerHTML = '<tr><td colspan="4" style="text-align:center; padding:12px;">No hay movimientos contables registrados.</td></tr>';
+  } else {
+    movs.forEach(m => {
+      const tr = document.createElement('tr');
+      const esIng = m.tipo === 'ingreso';
+      tr.innerHTML = `
+        <td>${formatearFecha(m.fecha)}</td>
+        <td style="font-weight:700; color:${esIng ? '#047857' : '#b91c1c'};">${esIng ? 'INGRESO' : 'GASTO'}</td>
+        <td>${m.concepto}</td>
+        <td style="text-align:right; font-weight:700;">${esIng ? '+' : '-'}${formatearEuro(m.importe)}</td>
+      `;
+      cuerpoTabla.appendChild(tr);
+    });
+  }
+
+  // Abre el diálogo nativo para Guardar como PDF o Imprimir
+  window.print();
+}
+// ============================================================
+// FIN MÓDULO 10: EXPORTACIÓN DE INFORME PDF
 // ============================================================
