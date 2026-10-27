@@ -21,12 +21,12 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <!-- Estilos del Club con versión anti-caché -->
-  <link rel="stylesheet" href="estilos.css?v=2" />
+  <link rel="stylesheet" href="estilos.css?v=3" />
 </head>
 <body class="selection:bg-gold-500 selection:text-baize-950">
 
   <!-- ============================================================ -->
-  <!-- INICIO MÓDULO 1: CABECERA Y BOTÓN ADMIN                     -->
+  <!-- MÓDULO 1: CABECERA Y CONTROL ADMINISTRADOR                   -->
   <!-- ============================================================ -->
   <header id="main-header">
     <div class="header-container">
@@ -39,7 +39,7 @@
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
-        <button id="btnExportarPDF" class="btn-exportar-pill" style="display: none;" onclick="generarInformePDF()" title="Descargar balance en PDF">
+        <button id="btnExportarPDF" class="btn-exportar-pill" onclick="generarInformePDF()" title="Descargar balance en PDF">
           <i data-lucide="file-text" class="w-4 h-4"></i>
           <span>Informe PDF</span>
         </button>
@@ -51,90 +51,77 @@
       </div>
     </div>
   </header>
-  <!-- ============================================================ -->
-  <!-- FIN MÓDULO 1: CABECERA Y BOTÓN ADMIN                        -->
-  <!-- ============================================================ -->
 
   <!-- ============================================================ -->
-  <!-- INICIO MÓDULO 2: BANNER AVISO MODO ADMIN                    -->
+  <!-- MÓDULO 2: BANNER DE AVISO MODO ADMIN                         -->
   <!-- ============================================================ -->
   <div id="bannerAdmin" class="banner-admin">
     ⚠️ MODO ADMINISTRADOR ACTIVO (Edición y altas permitidas)
   </div>
-  <!-- ============================================================ -->
-  <!-- FIN MÓDULO 2: BANNER AVISO MODO ADMIN                       -->
-  <!-- ============================================================ -->
-
 
   <main>
     <!-- ============================================================ -->
-  <!-- INICIO MÓDULO 3: SECCIÓN 1 - BOTE Y CAJA                    -->
-  <!-- ============================================================ -->
-  <section id="sec-bote" class="seccion activa">
-    <!-- Tarjeta Saldo Principal -->
-    <div class="tarjeta-saldo-dorada">
-      <span class="etiqueta-saldo">Saldo Disponible en Caja</span>
-      <div class="cifra-saldo font-mono" id="boteSaldoTotal">0,00 €</div>
-    </div>
+    <!-- MÓDULO 3: SECCIÓN 1 - BOTE Y CAJA                            -->
+    <!-- ============================================================ -->
+    <section id="sec-bote" class="seccion activa">
+      <!-- Sección 3.1: Saldo Principal -->
+      <div class="tarjeta-saldo-dorada">
+        <span class="etiqueta-saldo">Saldo Disponible en Caja</span>
+        <div class="cifra-saldo font-mono" id="boteSaldoTotal">0,00 €</div>
+      </div>
 
-    <!-- Aviso de Votación Pendiente (Solo visible si hay propuestas sin votar) -->
-    <div id="bannerVotacionPendiente" style="display: none; background: rgba(212, 175, 55, 0.2); border: 2px solid var(--gold-primary); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; cursor: pointer;" onclick="document.querySelectorAll('.nav-btn')[3].click()">
-      <div style="display: flex; align-items: center; justify-content: space-between;">
-        <div style="display: flex; align-items: center; gap: 10px;">
-          <span style="font-size: 24px;">🗳️</span>
-          <div>
-            <div style="font-size: 15px; font-weight: 800; color: var(--gold-bright);" id="txtVotacionPendiente">Nueva votación abierta</div>
-            <div style="font-size: 12px; color: rgba(255, 255, 255, 0.8);">Toca aquí para emitir tu voto</div>
+      <!-- Sección 3.2: Aviso de Votación Pendiente -->
+      <div id="bannerVotacionPendiente" style="display: none; background: rgba(212, 175, 55, 0.2); border: 2px solid var(--gold-primary); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; cursor: pointer;" onclick="document.querySelectorAll('.nav-btn')[3].click()">
+        <div style="display: flex; align-items: center; justify-content: space-between;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="font-size: 24px;">🗳️</span>
+            <div>
+              <div style="font-size: 15px; font-weight: 800; color: var(--gold-bright);" id="txtVotacionPendiente">Nueva votación abierta</div>
+              <div style="font-size: 12px; color: rgba(255, 255, 255, 0.8);">Toca aquí para emitir tu voto</div>
+            </div>
           </div>
+          <span style="background: var(--gold-primary); color: #000; font-size: 12px; font-weight: 900; padding: 4px 10px; border-radius: 20px;">VOTAR</span>
         </div>
-        <span style="background: var(--gold-primary); color: #000; font-size: 12px; font-weight: 900; padding: 4px 10px; border-radius: 20px;">VOTAR</span>
       </div>
-    </div>
 
-    <!-- Resumen de Totales -->
-    <div class="grid-resumen">
-      <div class="felt-card card-kpi">
-        <span class="kpi-titulo text-emerald-300">Total Ingresos</span>
-        <div class="kpi-valor font-mono text-emerald-400" id="boteTotalIngresos">+0,00 €</div>
+      <!-- Sección 3.3: Totales de Ingresos y Gastos -->
+      <div class="grid-resumen">
+        <div class="felt-card card-kpi">
+          <span class="kpi-titulo text-emerald-300">Total Ingresos</span>
+          <div class="kpi-valor font-mono text-emerald-400" id="boteTotalIngresos">+0,00 €</div>
+        </div>
+        <div class="felt-card card-kpi">
+          <span class="kpi-titulo text-rose-300">Total Gastos</span>
+          <div class="kpi-valor font-mono text-rose-400" id="boteTotalGastos">-0,00 €</div>
+        </div>
       </div>
-      <div class="felt-card card-kpi">
-        <span class="kpi-titulo text-rose-300">Total Gastos</span>
-        <div class="kpi-valor font-mono text-rose-400" id="boteTotalGastos">-0,00 €</div>
-      </div>
-    </div>
 
-    <!-- Movimientos Recientes -->
-    <div class="felt-card p-4">
-      <div class="card-header-flex">
-        <h2>Últimos Movimientos</h2>
-        <span class="contador-badge" id="boteNumMovs">(0)</span>
+      <!-- Sección 3.4: Últimos Movimientos -->
+      <div class="felt-card p-4">
+        <div class="card-header-flex">
+          <h2>Últimos Movimientos</h2>
+          <span class="contador-badge" id="boteNumMovs">(0)</span>
+        </div>
+        <ul class="lista-movimientos" id="listaMovimientosBote"></ul>
       </div>
-      <ul class="lista-movimientos" id="listaMovimientosBote"></ul>
-    </div>
-  </section>
-  <!-- ============================================================ -->
-  <!-- FIN MÓDULO 3: SECCIÓN 1 - BOTE Y CAJA                       -->
-  <!-- ============================================================ -->
-
+    </section>
 
     <!-- ============================================================ -->
-    <!-- INICIO MÓDULO 4: SECCIÓN 2 - GASTOS E INGRESOS              -->
+    <!-- MÓDULO 4: SECCIÓN 2 - GASTOS E INGRESOS                      -->
     <!-- ============================================================ -->
     <section id="sec-gastos" class="seccion">
-      <!-- Panel de Registro exclusivo Admin -->
+      <!-- Sección 4.1: Panel Formulario de Registro (Admin) -->
       <div class="panel-admin-box">
         <h3 class="panel-titulo">
           <i data-lucide="arrow-left-right" class="w-5 h-5 text-gold-400"></i>
           <span>Registrar Movimiento en Caja</span>
         </h3>
 
-        <!-- Banner de modo edición -->
         <div id="bannerEdicionGasto" style="display: none; background: rgba(212, 175, 55, 0.2); border: 1px solid var(--gold-primary); padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; justify-content: space-between; align-items: center;">
           <span style="font-size: 13px; font-weight: 700; color: var(--gold-bright);">✏️ Editando asiento seleccionado</span>
           <button type="button" onclick="cancelarEdicionMovimiento()" style="background: none; border: none; color: #fff; font-size: 12px; text-decoration: underline; cursor: pointer;">Cancelar</button>
         </div>
 
-        <!-- Selector de Tipo: Gasto o Ingreso -->
         <div class="tipo-mov-selector">
           <button type="button" id="btnTipoGasto" class="btn-tipo-pill activo gasto" onclick="seleccionarTipoMov('gasto')">
             📤 Registrar Gasto
@@ -161,7 +148,6 @@
             </div>
           </div>
 
-          <!-- Campo de foto -->
           <div id="bloqueFotoTicket">
             <label class="form-label">Ticket o Comprobante (Opcional en ingresos):</label>
             <input type="file" id="gastoFotoInput" accept="image/*" capture="environment" style="display: none;" onchange="procesarFotoTicket(event)" />
@@ -179,7 +165,7 @@
         </form>
       </div>
 
-      <!-- Listado de Gastos e Ingresos -->
+      <!-- Sección 4.2: Listado Detallado de Asientos -->
       <div class="felt-card p-4">
         <div class="card-header-flex">
           <h2>Historial de Gastos e Ingresos</h2>
@@ -188,16 +174,12 @@
         <div id="listaGastosDetalle" class="space-y-3 mt-3"></div>
       </div>
     </section>
-    <!-- ============================================================ -->
-    <!-- FIN MÓDULO 4: SECCIÓN 2 - GASTOS E INGRESOS                 -->
-    <!-- ============================================================ -->
-
 
     <!-- ============================================================ -->
-    <!-- INICIO MÓDULO 5: SECCIÓN 3 - BILLARISTAS                    -->
+    <!-- MÓDULO 5: SECCIÓN 3 - BILLARISTAS Y APORTACIONES             -->
     <!-- ============================================================ -->
     <section id="sec-socios" class="seccion">
-      <!-- Panel de Gestión exclusivo Admin -->
+      <!-- Sección 5.1: Panel Alta y Control Admin -->
       <div class="panel-admin-box">
         <h3 class="panel-titulo">
           <i data-lucide="user-plus" class="w-5 h-5 text-gold-400"></i>
@@ -212,7 +194,7 @@
         </button>
       </div>
 
-      <!-- Resumen Cuotas / Aportaciones Alineado -->
+      <!-- Sección 5.2: Contador de Estados -->
       <div class="grid-resumen">
         <div class="felt-card card-kpi">
           <span class="kpi-titulo text-emerald-300">Pagados</span>
@@ -224,7 +206,7 @@
         </div>
       </div>
 
-      <!-- Listado de Billaristas -->
+      <!-- Sección 5.3: Lista Nominal -->
       <div class="felt-card p-4">
         <div class="card-header-flex">
           <h2>Lista de Billaristas</h2>
@@ -233,16 +215,12 @@
         <div id="contenedorListaSocios" class="space-y-2 mt-3"></div>
       </div>
     </section>
-    <!-- ============================================================ -->
-    <!-- FIN MÓDULO 5: SECCIÓN 3 - BILLARISTAS                       -->
-    <!-- ============================================================ -->
-
 
     <!-- ============================================================ -->
-    <!-- INICIO MÓDULO 6: SECCIÓN 4 - PROPUESTAS Y VOTACIONES        -->
+    <!-- MÓDULO 6: SECCIÓN 4 - PROPUESTAS Y VOTACIONES                -->
     <!-- ============================================================ -->
     <section id="sec-votaciones" class="seccion">
-      <!-- Formulario de propuestas -->
+      <!-- Sección 6.1: Formulario Nueva Propuesta -->
       <div class="felt-card p-4 mb-4 border-gold">
         <h3 class="panel-titulo">
           <i data-lucide="lightbulb" class="w-5 h-5 text-gold-400"></i>
@@ -259,13 +237,11 @@
             <textarea id="propuestaDesc" class="form-input" rows="2" placeholder="Ej: Cuestan unos 80€ en Billares Sevilla y mejorarán la mesa." required></textarea>
           </div>
 
-          <!-- Campo de fecha: solo para Admin -->
           <div id="grupoFechaAdmin" class="solo-admin">
             <label class="form-label text-gold-400">Fecha límite de votación (Admin):</label>
             <input type="date" id="propuestaLimite" class="form-input font-mono" />
           </div>
 
-          <!-- Aviso socios normales -->
           <p id="avisoFechaSocio" class="text-xs text-slate-300">
             📅 La fecha límite de votación la establecerá el administrador al revisarla.
           </p>
@@ -274,7 +250,7 @@
         </form>
       </div>
 
-      <!-- Listado de Propuestas -->
+      <!-- Sección 6.2: Listado de Votaciones Activas -->
       <div class="felt-card p-4">
         <div class="card-header-flex">
           <h2>Propuestas en Votación</h2>
@@ -283,14 +259,11 @@
         <div id="contenedorVotaciones" class="space-y-4 mt-3"></div>
       </div>
     </section>
-    <!-- ============================================================ -->
-    <!-- FIN MÓDULO 6: SECCIÓN 4 - PROPUESTAS Y VOTACIONES           -->
-    <!-- ============================================================ -->
 
-   <!-- ============================================================ -->
-    <!-- INICIO MÓDULO 11: PLANTILLA DE IMPRESIÓN Y EXPORTACIÓN PDF  -->
     <!-- ============================================================ -->
-    <div id="informeImpresionPDF" class="solo-impresion" style="display: none;">
+    <!-- MÓDULO 7: PLANTILLA DE IMPRESIÓN Y EXPORTACIÓN PDF           -->
+    <!-- ============================================================ -->
+    <div id="informeImpresionPDF" class="solo-impresion">
       <div class="print-header">
         <div>
           <h1 class="print-titulo">BILLAR ELCANO</h1>
@@ -335,12 +308,10 @@
         Documento oficial generado desde la aplicación de Tesorería de Billar Elcano.
       </div>
     </div>
-    <!-- ============================================================ -->
-    <!-- FIN MÓDULO 11: PLANTILLA DE IMPRESIÓN Y EXPORTACIÓN PDF     -->
-    <!-- ============================================================ -->
+  </main>
 
   <!-- ============================================================ -->
-  <!-- INICIO MÓDULO 7: BARRA DE NAVEGACIÓN INFERIOR               -->
+  <!-- MÓDULO 8: BARRA DE NAVEGACIÓN INFERIOR                       -->
   <!-- ============================================================ -->
   <nav class="bottom-nav">
     <button class="nav-btn active" onclick="cambiarSeccion('bote', this)">
@@ -361,26 +332,17 @@
       <span id="badgeVotacionNav" style="display: none; position: absolute; top: 6px; right: 22%; width: 9px; height: 9px; background-color: #ef4444; border: 1.5px solid var(--bg-felt); border-radius: 50%;"></span>
     </button>
   </nav>
-  <!-- ============================================================ -->
-  <!-- FIN MÓDULO 7: BARRA DE NAVEGACIÓN INFERIOR                  -->
-  <!-- ============================================================ -->
-
 
   <!-- ============================================================ -->
-  <!-- INICIO MÓDULO 8: MODAL VISOR DE TICKET AMPLIADO             -->
+  <!-- MÓDULO 9: MODALES (VISOR TICKET Y CONTROL PIN)               -->
   <!-- ============================================================ -->
+  <!-- Sección 9.1: Visor Ticket Ampliado -->
   <div id="modalVisor" class="modal-visor" onclick="cerrarVisor()">
     <img id="imgVisorCompleta" src="" alt="Ticket Ampliado" onclick="event.stopPropagation()" />
     <button class="btn-cerrar-visor" onclick="cerrarVisor()">✕ Cerrar Ticket</button>
   </div>
-  <!-- ============================================================ -->
-  <!-- FIN MÓDULO 8: MODAL VISOR DE TICKET AMPLIADO                -->
-  <!-- ============================================================ -->
 
-
-  <!-- ============================================================ -->
-  <!-- INICIO MÓDULO 9: MODAL INTRODUCCIÓN DE PIN                  -->
-  <!-- ============================================================ -->
+  <!-- Sección 9.2: Modal Introducción de PIN -->
   <div id="modalPin" class="modal-overlay">
     <div class="modal-pin-box">
       <div class="icon-shield-wrap">
@@ -408,20 +370,15 @@
       </form>
     </div>
   </div>
-  <!-- ============================================================ -->
-  <!-- FIN MÓDULO 9: MODAL INTRODUCCIÓN DE PIN                     -->
-  <!-- ============================================================ -->
-
 
   <!-- ============================================================ -->
-  <!-- INICIO MÓDULO 10: SCRIPTS FIREBASE Y APP                    -->
+  <!-- MÓDULO 10: SCRIPTS FIREBASE Y APP (CON CONTROL DE VERSIÓN)   -->
   <!-- ============================================================ -->
   <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
-  <script src="script.js"></script>
+  <script src="script.js?v=3"></script>
   <!-- ============================================================ -->
-  <!-- FIN MÓDULO 10: SCRIPTS FIREBASE Y APP                       -->
+  <!-- FIN DEL DOCUMENTO: index.html                                -->
   <!-- ============================================================ -->
-
 </body>
 </html>

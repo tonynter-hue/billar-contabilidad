@@ -1,5 +1,5 @@
 /* ============================================================ */
-/* INICIO MÓDULO 1: VARIABLES Y BASE VISUAL CLUB                */
+/* MÓDULO 1: VARIABLES Y BASE VISUAL CLUB                       */
 /* ============================================================ */
 :root {
   --bg-deep: #03130d;
@@ -37,13 +37,9 @@ body {
   font-feature-settings: "tnum" 1, "zero" 0 !important;
   letter-spacing: 0.03em;
 }
-/* ============================================================ */
-/* FIN MÓDULO 1: VARIABLES Y BASE VISUAL CLUB                   */
-/* ============================================================ */
-
 
 /* ============================================================ */
-/* INICIO MÓDULO 2: CABECERA Y BOTÓN ADMIN                      */
+/* MÓDULO 2: CABECERA Y BOTONES DE ACCESO                       */
 /* ============================================================ */
 #main-header {
   background-color: rgba(7, 34, 24, 0.95);
@@ -114,6 +110,25 @@ body {
   font-weight: 800;
 }
 
+.btn-exportar-pill {
+  display: none;
+  align-items: center;
+  gap: 6px;
+  background-color: rgba(212, 175, 55, 0.15);
+  border: 1.5px solid var(--gold-primary);
+  color: var(--gold-bright);
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+body.admin-activo .btn-exportar-pill {
+  display: inline-flex !important;
+}
+
 .banner-admin {
   display: none;
   background: #fee2e2;
@@ -128,13 +143,9 @@ body {
 body.admin-activo .banner-admin {
   display: block;
 }
-/* ============================================================ */
-/* FIN MÓDULO 2: CABECERA Y BOTÓN ADMIN                         */
-/* ============================================================ */
-
 
 /* ============================================================ */
-/* INICIO MÓDULO 3: CONTENEDOR PRINCIPAL Y TARJETAS             */
+/* MÓDULO 3: CONTENEDOR PRINCIPAL Y TARJETAS                    */
 /* ============================================================ */
 main {
   max-width: 750px;
@@ -192,13 +203,9 @@ main {
 .space-y-2 > * + * { margin-top: 0.5rem; }
 .space-y-3 > * + * { margin-top: 0.75rem; }
 .space-y-4 > * + * { margin-top: 1rem; }
-/* ============================================================ */
-/* FIN MÓDULO 3: CONTENEDOR PRINCIPAL Y TARJETAS                */
-/* ============================================================ */
-
 
 /* ============================================================ */
-/* INICIO MÓDULO 4: ESTILOS SECCIÓN 1 - BOTE                    */
+/* MÓDULO 4: ESTILOS SECCIÓN 1 - BOTE                           */
 /* ============================================================ */
 .tarjeta-saldo-dorada {
   background: linear-gradient(135deg, #0c3826 0%, #04140e 100%);
@@ -291,13 +298,9 @@ main {
 
 .mov-importe.ingreso { color: var(--verde-dinero); }
 .mov-importe.gasto { color: var(--rojo-gasto); }
-/* ============================================================ */
-/* FIN MÓDULO 4: ESTILOS SECCIÓN 1 - BOTE                       */
-/* ============================================================ */
-
 
 /* ============================================================ */
-/* INICIO MÓDULO 5: ESTILOS SECCIÓN 2 - GASTOS E INGRESOS       */
+/* MÓDULO 5: ESTILOS SECCIÓN 2 - GASTOS E INGRESOS              */
 /* ============================================================ */
 .panel-admin-box {
   display: none;
@@ -379,7 +382,6 @@ body.admin-activo .panel-admin-box {
   border-color: var(--gold-primary);
 }
 
-/* Icono del calendario en dorado brillante */
 input[type="date"]::-webkit-calendar-picker-indicator {
   filter: invert(0.8) sepia(1) saturate(5) hue-rotate(5deg);
   cursor: pointer;
@@ -404,7 +406,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-weight: 700;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-center: center;
   gap: 8px;
   cursor: pointer;
 }
@@ -476,7 +478,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   object-fit: cover;
 }
 
-/* Botones de acción lápiz y papelera (Solo visibles para Admin) */
 .acciones-mov-item {
   display: none !important;
 }
@@ -518,13 +519,9 @@ body.admin-activo .acciones-mov-item {
 .btn-accion-icono.btn-borrar:hover {
   background-color: rgba(248, 113, 113, 0.35);
 }
-/* ============================================================ */
-/* FIN MÓDULO 5: ESTILOS SECCIÓN 2 - GASTOS E INGRESOS          */
-/* ============================================================ */
-
 
 /* ============================================================ */
-/* INICIO MÓDULO 6: ESTILOS SECCIÓN 3 - BILLARISTAS             */
+/* MÓDULO 6: ESTILOS SECCIÓN 3 - BILLARISTAS                    */
 /* ============================================================ */
 .flex-input-btn {
   display: flex;
@@ -603,13 +600,9 @@ body.admin-activo .badge-estado {
 body.admin-activo .btn-borrar-item {
   display: inline-block;
 }
-/* ============================================================ */
-/* FIN MÓDULO 6: ESTILOS SECCIÓN 3 - BILLARISTAS                */
-/* ============================================================ */
-
 
 /* ============================================================ */
-/* INICIO MÓDULO 7: ESTILOS SECCIÓN 4 - PROPUESTAS Y VOTACIONES */
+/* MÓDULO 7: ESTILOS SECCIÓN 4 - PROPUESTAS Y VOTACIONES        */
 /* ============================================================ */
 .solo-admin {
   display: none;
@@ -710,14 +703,48 @@ body.admin-activo .solo-admin {
 body.admin-activo .admin-cambiar-fecha {
   display: block;
 }
-/* ============================================================ */
-/* FIN MÓDULO 7: ESTILOS SECCIÓN 4 - PROPUESTAS Y VOTACIONES    */
-/* ============================================================ */
-
 
 /* ============================================================ */
-/* INICIO MÓDULO 8: MODALES Y VISORES                           */
+/* MÓDULO 8: NAVEGACIÓN INFERIOR Y MODALES                      */
 /* ============================================================ */
+nav.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(7, 34, 24, 0.98);
+  border-top: 1.5px solid rgba(212, 175, 55, 0.35);
+  display: flex;
+  justify-content: space-around;
+  z-index: 40;
+  backdrop-filter: blur(8px);
+}
+
+.nav-btn {
+  flex: 1;
+  background: none;
+  border: none;
+  border-top: 3.5px solid transparent;
+  color: rgba(203, 213, 225, 0.7);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 8px 4px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 58px;
+  transition: all 0.15s;
+}
+
+.nav-btn.active {
+  color: var(--gold-bright);
+  border-top-color: var(--gold-primary);
+  background-color: rgba(212, 175, 55, 0.08);
+}
+
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -824,85 +851,14 @@ body.admin-activo .admin-cambiar-fecha {
   border: none;
   cursor: pointer;
 }
-/* ============================================================ */
-/* FIN MÓDULO 8: MODALES Y VISORES                              */
-/* ============================================================ */
-
 
 /* ============================================================ */
-/* INICIO MÓDULO 9: BARRA INFERIOR FIJA                         */
+/* MÓDULO 9: PLANTILLA Y FORMATO DE IMPRESIÓN (PDF A4)          */
 /* ============================================================ */
-nav.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background-color: rgba(7, 34, 24, 0.98);
-  border-top: 1.5px solid rgba(212, 175, 55, 0.35);
-  display: flex;
-  justify-content: space-around;
-  z-index: 40;
-  backdrop-filter: blur(8px);
-}
-
-.nav-btn {
-  flex: 1;
-  background: none;
-  border: none;
-  border-top: 3.5px solid transparent;
-  color: rgba(203, 213, 225, 0.7);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 3px;
-  padding: 8px 4px;
-  font-size: 12px;
-  font-weight: 700;
-  cursor: pointer;
-  min-height: 58px;
-  transition: all 0.15s;
-}
-
-.nav-btn.active {
-  color: var(--gold-bright);
-  border-top-color: var(--gold-primary);
-  background-color: rgba(212, 175, 55, 0.08);
-}
-/* ============================================================ */
-/* FIN MÓDULO 9: BARRA INFERIOR FIJA                            */
-/* ============================================================ */
-
-/* ============================================================ */
-/* INICIO MÓDULO 10: BOTÓN Y ESTILOS DE EXPORTACIÓN PDF         */
-/* ============================================================ */
-.btn-exportar-pill {
-  display: none;
-  align-items: center;
-  gap: 6px;
-  background-color: rgba(212, 175, 55, 0.15);
-  border: 1.5px solid var(--gold-primary);
-  color: var(--gold-bright);
-  padding: 6px 12px;
-  border-radius: 20px;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-body.admin-activo .btn-exportar-pill {
-  display: inline-flex !important;
-}
-
-/* Ocultar plantilla en vista normal de pantalla */
 .solo-impresion {
   display: none !important;
 }
 
-/* ============================================================ */
-/* ESTILOS DE IMPRESIÓN (GENERACIÓN DE PDF FORMAL A4)           */
-/* ============================================================ */
 @media print {
   body {
     background: #ffffff !important;
@@ -911,7 +867,6 @@ body.admin-activo .btn-exportar-pill {
     font-size: 11pt !important;
   }
 
-  /* Ocultar absolutamente toda la app */
   #main-header,
   #bannerAdmin,
   .bottom-nav,
@@ -924,7 +879,6 @@ body.admin-activo .btn-exportar-pill {
     display: none !important;
   }
 
-  /* Mostrar únicamente el informe */
   .solo-impresion,
   #informeImpresionPDF {
     display: block !important;
@@ -1053,5 +1007,5 @@ body.admin-activo .btn-exportar-pill {
   }
 }
 /* ============================================================ */
-/* FIN MÓDULO 10: BOTÓN Y ESTILOS DE EXPORTACIÓN PDF            */
+/* FIN DEL ARCHIVO: estilos.css                                 */
 /* ============================================================ */

@@ -1,5 +1,5 @@
 // ============================================================
-// INICIO MÓDULO 1: CONFIGURACIÓN FIREBASE FIRESTORE & PIN
+// MÓDULO 1: CONFIGURACIÓN FIREBASE, PIN Y DATOS BASE
 // ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyC8TnUjhlyhz5VWlkdfiw57-xGX_1_8zcA",
@@ -15,6 +15,7 @@ if (typeof firebase !== 'undefined' && !firebase.apps.length) {
 }
 const db = (typeof firebase !== 'undefined') ? firebase.firestore() : null;
 
+// PIN de acceso del Administrador actualizado
 const ADMIN_PIN = "6133";
 let modoAdmin = false;
 let fotoTicketBase64 = "";
@@ -42,14 +43,11 @@ const datosPorDefecto = {
 };
 
 let appData = { ...datosPorDefecto };
-// ============================================================
-// FIN MÓDULO 1: CONFIGURACIÓN FIREBASE FIRESTORE & PIN
-// ============================================================
-
 
 // ============================================================
-// INICIO MÓDULO 2: SINCRONIZACIÓN EN TIEMPO REAL (FIRESTORE)
+// MÓDULO 2: SINCRONIZACIÓN EN TIEMPO REAL (FIRESTORE)
 // ============================================================
+// Sección 2.1: Escucha remota y snapshot
 function initRealtimeSync() {
   if (!db) {
     cargarCopiaLocal();
@@ -76,6 +74,7 @@ function initRealtimeSync() {
     });
 }
 
+// Sección 2.2: Persistencia remota y local
 function subirEstadoAFirebase() {
   if (!db) return;
   db.collection("bote").doc("contabilidad").set({
@@ -117,13 +116,9 @@ function formatearFecha(fechaStr) {
   const partes = fechaStr.split('-');
   return partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : fechaStr;
 }
-// ============================================================
-// FIN MÓDULO 2: SINCRONIZACIÓN EN TIEMPO REAL (FIRESTORE)
-// ============================================================
-
 
 // ============================================================
-// INICIO MÓDULO 3: NAVEGACIÓN ENTRE PESTAÑAS
+// MÓDULO 3: NAVEGACIÓN ENTRE PESTAÑAS
 // ============================================================
 const TITULOS_SECCION = {
   bote: "Saldo Actual",
@@ -148,13 +143,9 @@ function cambiarSeccion(seccionId, boton) {
   if (seccionId === 'votaciones') renderizarVotaciones();
   if (window.lucide) lucide.createIcons();
 }
-// ============================================================
-// FIN MÓDULO 3: NAVEGACIÓN ENTRE PESTAÑAS
-// ============================================================
-
 
 // ============================================================
-// INICIO MÓDULO 4: SECCIÓN 1 - BOTE
+// MÓDULO 4: SECCIÓN 1 - BOTE Y CAJA
 // ============================================================
 function renderizarBote() {
   const movs = appData.movimientos || [];
@@ -198,17 +189,14 @@ function renderizarBote() {
     listaUl.appendChild(li);
   });
 }
-// ============================================================
-// FIN MÓDULO 4: SECCIÓN 1 - BOTE
-// ============================================================
-
 
 // ============================================================
-// INICIO MÓDULO 5: SECCIÓN 2 - GASTOS E INGRESOS CON TICKETS
+// MÓDULO 5: SECCIÓN 2 - GASTOS E INGRESOS CON TICKETS
 // ============================================================
 let tipoMovimientoActual = 'gasto';
 let editingMovId = null;
 
+// Sección 5.1: Selector de operación
 function seleccionarTipoMov(tipo) {
   tipoMovimientoActual = tipo;
   const btnGasto = document.getElementById('btnTipoGasto');
@@ -232,6 +220,7 @@ function seleccionarTipoMov(tipo) {
   }
 }
 
+// Sección 5.2: Renderizado de asientos
 function renderizarGastos() {
   const movs = appData.movimientos || [];
   document.getElementById('numGastosTotal').textContent = `(${movs.length})`;
@@ -289,6 +278,7 @@ function renderizarGastos() {
   if (window.lucide) lucide.createIcons();
 }
 
+// Sección 5.3: Altas, edición y borrado
 function editarMovimiento(id) {
   if (!modoAdmin) {
     clickBotonAdmin();
@@ -448,13 +438,9 @@ function establecerFechaHoy() {
   const cLimite = document.getElementById('propuestaLimite');
   if (cLimite) cLimite.value = hoy;
 }
-// ============================================================
-// FIN MÓDULO 5: SECCIÓN 2 - GASTOS E INGRESOS CON TICKETS     
-// ============================================================
-
 
 // ============================================================
-// INICIO MÓDULO 6: SECCIÓN 3 - BILLARISTAS Y APORTACIONES     
+// MÓDULO 6: SECCIÓN 3 - BILLARISTAS Y APORTACIONES
 // ============================================================
 function renderizarSocios() {
   const socios = appData.socios || [];
@@ -536,13 +522,9 @@ function reiniciarCuotas() {
   appData.socios.forEach(s => s.estado = 'pendiente');
   subirEstadoAFirebase();
 }
-// ============================================================
-// FIN MÓDULO 6: SECCIÓN 3 - BILLARISTAS Y APORTACIONES        
-// ============================================================
-
 
 // ============================================================
-// INICIO MÓDULO 7: SECCIÓN 4 - PROPUESTAS Y VOTACIONES        
+// MÓDULO 7: SECCIÓN 4 - PROPUESTAS Y VOTACIONES
 // ============================================================
 function actualizarAvisosVotacion() {
   const votaciones = appData.votaciones || [];
@@ -612,7 +594,6 @@ function renderizarVotaciones() {
       <div class="votacion-desc">${prop.descripcion}</div>
       <div class="votacion-limite-tag" style="${estiloLimite}">${textoLimite}</div>
 
-      <!-- Panel Admin para fijar/cambiar fecha -->
       <div class="admin-cambiar-fecha">
         <label style="font-size:12px; font-weight:700; color:var(--gold-bright); display:block; margin-bottom:4px;">Fijar plazo (Admin):</label>
         <div style="display:flex; gap:8px;">
@@ -760,88 +741,9 @@ function eliminarPropuesta(id) {
   subirEstadoAFirebase();
   actualizarAvisosVotacion();
 }
-// ============================================================
-// FIN MÓDULO 7: SECCIÓN 4 - PROPUESTAS Y VOTACIONES           
-// ============================================================
 
 // ============================================================
-// INICIO MÓDULO 8: CONTROL DE PIN Y ADMINISTRADOR             
-// ============================================================
-function clickBotonAdmin() {
-  if (modoAdmin) {
-    modoAdmin = false;
-    actualizarEstadoAdminUI();
-  } else {
-    document.getElementById('inputPinAdmin').value = '';
-    document.getElementById('pinError').textContent = '';
-    document.getElementById('modalPin').classList.add('activo');
-    setTimeout(() => document.getElementById('inputPinAdmin').focus(), 150);
-  }
-}
-
-function cerrarModalPin() {
-  document.getElementById('modalPin').classList.remove('activo');
-}
-
-function verificarPinAdmin() {
-  const input = document.getElementById('inputPinAdmin');
-  if (input.value === ADMIN_PIN) {
-    modoAdmin = true;
-    cerrarModalPin();
-    actualizarEstadoAdminUI();
-  } else {
-    document.getElementById('pinError').textContent = "PIN incorrecto. Inténtalo de nuevo.";
-    input.value = "";
-  }
-}
-
-function actualizarEstadoAdminUI() {
-  const btn = document.getElementById('btnAdmin');
-  const txt = document.getElementById('textAdmin');
-  const icon = document.getElementById('iconAdmin');
-
-  if (modoAdmin) {
-    document.body.classList.add('admin-activo');
-    btn.classList.add('admin-on');
-    txt.textContent = "Admin ON";
-    icon.setAttribute('data-lucide', 'lock-open');
-  } else {
-    document.body.classList.remove('admin-activo');
-    btn.classList.remove('admin-on');
-    txt.textContent = "Acceso PIN";
-    icon.setAttribute('data-lucide', 'lock');
-  }
-  if (window.lucide) lucide.createIcons();
-  renderizarTodo();
-}
-// ============================================================
-// FIN MÓDULO 8: CONTROL DE PIN Y ADMINISTRADOR                
-// ============================================================
-
-
-// ============================================================
-// INICIO MÓDULO 9: INICIALIZACIÓN                             
-// ============================================================
-document.addEventListener("DOMContentLoaded", () => {
-  establecerFechaHoy();
-  cargarCopiaLocal();
-  initRealtimeSync();
-
-  // Registro del Service Worker para funcionamiento PWA
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('./sw.js')
-      .then(reg => console.log('Service Worker registrado:', reg.scope))
-      .catch(err => console.warn('Fallo Service Worker:', err));
-  }
-
-  if (window.lucide) lucide.createIcons();
-});
-// ============================================================
-// FIN MÓDULO 9: INICIALIZACIÓN                                
-// ============================================================
-
-// ============================================================
-// INICIO MÓDULO 10: EXPORTACIÓN DE INFORME PDF
+// MÓDULO 8: EXPORTACIÓN DE INFORME PDF
 // ============================================================
 function generarInformePDF() {
   if (!modoAdmin) {
@@ -898,9 +800,84 @@ function generarInformePDF() {
     });
   }
 
-  // Abre el diálogo nativo para Guardar como PDF o Imprimir
+  // Apertura de ventana nativa de impresión / guardado PDF
   window.print();
 }
+
 // ============================================================
-// FIN MÓDULO 10: EXPORTACIÓN DE INFORME PDF
+// MÓDULO 9: CONTROL DE PIN Y ADMINISTRADOR
+// ============================================================
+function clickBotonAdmin() {
+  if (modoAdmin) {
+    modoAdmin = false;
+    actualizarEstadoAdminUI();
+  } else {
+    document.getElementById('inputPinAdmin').value = '';
+    document.getElementById('pinError').textContent = '';
+    document.getElementById('modalPin').classList.add('activo');
+    setTimeout(() => document.getElementById('inputPinAdmin').focus(), 150);
+  }
+}
+
+function cerrarModalPin() {
+  document.getElementById('modalPin').classList.remove('activo');
+}
+
+function verificarPinAdmin() {
+  const input = document.getElementById('inputPinAdmin');
+  if (input.value === ADMIN_PIN) {
+    modoAdmin = true;
+    cerrarModalPin();
+    actualizarEstadoAdminUI();
+  } else {
+    document.getElementById('pinError').textContent = "PIN incorrecto. Inténtalo de nuevo.";
+    input.value = "";
+  }
+}
+
+function actualizarEstadoAdminUI() {
+  const btn = document.getElementById('btnAdmin');
+  const txt = document.getElementById('textAdmin');
+  const icon = document.getElementById('iconAdmin');
+  const btnPdf = document.getElementById('btnExportarPDF');
+
+  if (modoAdmin) {
+    document.body.classList.add('admin-activo');
+    btn.classList.add('admin-on');
+    txt.textContent = "Admin ON";
+    icon.setAttribute('data-lucide', 'lock-open');
+    if (btnPdf) btnPdf.style.display = 'inline-flex';
+  } else {
+    document.body.classList.remove('admin-activo');
+    btn.classList.remove('admin-on');
+    txt.textContent = "Acceso PIN";
+    icon.setAttribute('data-lucide', 'lock');
+    if (btnPdf) btnPdf.style.display = 'none';
+  }
+  if (window.lucide) lucide.createIcons();
+  renderizarTodo();
+}
+
+// ============================================================
+// MÓDULO 10: INICIALIZACIÓN Y SERVICE WORKER
+// ============================================================
+document.addEventListener("DOMContentLoaded", () => {
+  establecerFechaHoy();
+  cargarCopiaLocal();
+  initRealtimeSync();
+
+  // Control de estado inicial del botón PDF
+  const btnPdf = document.getElementById('btnExportarPDF');
+  if (btnPdf) btnPdf.style.display = 'none';
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('./sw.js')
+      .then(reg => console.log('Service Worker registrado:', reg.scope))
+      .catch(err => console.warn('Fallo Service Worker:', err));
+  }
+
+  if (window.lucide) lucide.createIcons();
+});
+// ============================================================
+// FIN DEL ARCHIVO: script.js
 // ============================================================
