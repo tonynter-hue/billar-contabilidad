@@ -544,11 +544,39 @@ function reiniciarCuotas() {
 // ============================================================
 // INICIO MÓDULO 7: SECCIÓN 4 - PROPUESTAS Y VOTACIONES        
 // ============================================================
+function actualizarAvisosVotacion() {
+  const votaciones = appData.votaciones || [];
+  // Cuenta cuántas propuestas activas no ha votado todavía este billarista
+  let pendientes = 0;
+  votaciones.forEach(prop => {
+    if (!localStorage.getItem(`voto_propuesta_${prop.id}`)) {
+      pendientes++;
+    }
+  });
+
+  const bannerBote = document.getElementById('bannerVotacionPendiente');
+  const txtBanner = document.getElementById('txtVotacionPendiente');
+  const badgeNav = document.getElementById('badgeVotacionNav');
+
+  if (pendientes > 0) {
+    if (bannerBote) bannerBote.style.display = 'block';
+    if (txtBanner) txtBanner.textContent = pendientes === 1 
+      ? '¡Tienes 1 propuesta pendiente de voto!' 
+      : `¡Tienes ${pendientes} propuestas pendientes de voto!`;
+    if (badgeNav) badgeNav.style.display = 'block';
+  } else {
+    if (bannerBote) bannerBote.style.display = 'none';
+    if (badgeNav) badgeNav.style.display = 'none';
+  }
+}
+
 function renderizarVotaciones() {
   const votaciones = appData.votaciones || [];
   document.getElementById('numVotacionesTotal').textContent = `(${votaciones.length})`;
   const contenedor = document.getElementById('contenedorVotaciones');
   contenedor.innerHTML = '';
+
+  actualizarAvisosVotacion();
 
   if (votaciones.length === 0) {
     contenedor.innerHTML = '<p style="text-align:center; color:rgba(203,213,225,0.6); padding:16px;">No hay propuestas activas.</p>';
@@ -646,6 +674,7 @@ function emitirVoto(idPropuesta, sentido) {
 
   localStorage.setItem(claveVoto, sentido);
   subirEstadoAFirebase();
+  actualizarAvisosVotacion();
 }
 
 function anularVoto(idPropuesta) {
@@ -694,6 +723,19 @@ function crearPropuesta(event) {
 
   document.getElementById('propuestaTitulo').value = '';
   document.getElementById('propuestaDesc').value = '';
+
+  // Pregunta si se quiere avisar al grupo de WhatsApp
+  const urlApp = window.location.href;
+  const avisarWhatsApp = confirm("✅ Propuesta publicada correctamente.\n\n¿Quieres enviar un aviso al grupo de WhatsApp del billar?");
+  if (avisarWhatsApp) {
+    const mensaje = encodeURIComponent(
+      `🎱 *Club Elcano · Nueva Propuesta de Compra*\n\n` +
+      `💡 *Propuesta:* ${titulo}\n` +
+      `📝 *Detalles:* ${desc}\n\n` +
+      `🗳️ ¡Entra en la app a emitir tu voto!\n👉 ${urlApp}`
+    );
+    window.open(`https://api.whatsapp.com/send?text=${mensaje}`, '_blank');
+  }
 }
 
 function guardarFechaAdmin(idPropuesta) {
@@ -718,6 +760,7 @@ function eliminarPropuesta(id) {
   appData.votaciones = (appData.votaciones || []).filter(v => v.id !== id);
   localStorage.removeItem(`voto_propuesta_${id}`);
   subirEstadoAFirebase();
+  actualizarAvisosVotacion();
 }
 // ============================================================
 // FIN MÓDULO 7: SECCIÓN 4 - PROPUESTAS Y VOTACIONES           

@@ -62,39 +62,53 @@
 
   <main>
     <!-- ============================================================ -->
-    <!-- INICIO MÓDULO 3: SECCIÓN 1 - BOTE Y CAJA                    -->
-    <!-- ============================================================ -->
-    <section id="sec-bote" class="seccion activa">
-      <!-- Tarjeta Saldo Principal -->
-      <div class="tarjeta-saldo-dorada">
-        <span class="etiqueta-saldo">Saldo Disponible en Caja</span>
-        <div class="cifra-saldo font-mono" id="boteSaldoTotal">0,00 €</div>
-      </div>
+  <!-- INICIO MÓDULO 3: SECCIÓN 1 - BOTE Y CAJA                    -->
+  <!-- ============================================================ -->
+  <section id="sec-bote" class="seccion activa">
+    <!-- Tarjeta Saldo Principal -->
+    <div class="tarjeta-saldo-dorada">
+      <span class="etiqueta-saldo">Saldo Disponible en Caja</span>
+      <div class="cifra-saldo font-mono" id="boteSaldoTotal">0,00 €</div>
+    </div>
 
-      <!-- Resumen de Totales -->
-      <div class="grid-resumen">
-        <div class="felt-card card-kpi">
-          <span class="kpi-titulo text-emerald-300">Total Ingresos</span>
-          <div class="kpi-valor font-mono text-emerald-400" id="boteTotalIngresos">+0,00 €</div>
+    <!-- Aviso de Votación Pendiente (Solo visible si hay propuestas sin votar) -->
+    <div id="bannerVotacionPendiente" style="display: none; background: rgba(212, 175, 55, 0.2); border: 2px solid var(--gold-primary); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; cursor: pointer;" onclick="document.querySelectorAll('.nav-btn')[3].click()">
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 24px;">🗳️</span>
+          <div>
+            <div style="font-size: 15px; font-weight: 800; color: var(--gold-bright);" id="txtVotacionPendiente">Nueva votación abierta</div>
+            <div style="font-size: 12px; color: rgba(255, 255, 255, 0.8);">Toca aquí para emitir tu voto</div>
+          </div>
         </div>
-        <div class="felt-card card-kpi">
-          <span class="kpi-titulo text-rose-300">Total Gastos</span>
-          <div class="kpi-valor font-mono text-rose-400" id="boteTotalGastos">-0,00 €</div>
-        </div>
+        <span style="background: var(--gold-primary); color: #000; font-size: 12px; font-weight: 900; padding: 4px 10px; border-radius: 20px;">VOTAR</span>
       </div>
+    </div>
 
-      <!-- Movimientos Recientes -->
-      <div class="felt-card p-4">
-        <div class="card-header-flex">
-          <h2>Últimos Movimientos</h2>
-          <span class="contador-badge" id="boteNumMovs">(0)</span>
-        </div>
-        <ul class="lista-movimientos" id="listaMovimientosBote"></ul>
+    <!-- Resumen de Totales -->
+    <div class="grid-resumen">
+      <div class="felt-card card-kpi">
+        <span class="kpi-titulo text-emerald-300">Total Ingresos</span>
+        <div class="kpi-valor font-mono text-emerald-400" id="boteTotalIngresos">+0,00 €</div>
       </div>
-    </section>
-    <!-- ============================================================ -->
-    <!-- FIN MÓDULO 3: SECCIÓN 1 - BOTE Y CAJA                       -->
-    <!-- ============================================================ -->
+      <div class="felt-card card-kpi">
+        <span class="kpi-titulo text-rose-300">Total Gastos</span>
+        <div class="kpi-valor font-mono text-rose-400" id="boteTotalGastos">-0,00 €</div>
+      </div>
+    </div>
+
+    <!-- Movimientos Recientes -->
+    <div class="felt-card p-4">
+      <div class="card-header-flex">
+        <h2>Últimos Movimientos</h2>
+        <span class="contador-badge" id="boteNumMovs">(0)</span>
+      </div>
+      <ul class="lista-movimientos" id="listaMovimientosBote"></ul>
+    </div>
+  </section>
+  <!-- ============================================================ -->
+  <!-- FIN MÓDULO 3: SECCIÓN 1 - BOTE Y CAJA                       -->
+  <!-- ============================================================ -->
 
 
     <!-- ============================================================ -->
@@ -285,9 +299,10 @@
       <i data-lucide="users" class="w-5 h-5"></i>
       <span>Billaristas</span>
     </button>
-    <button class="nav-btn" onclick="cambiarSeccion('votaciones', this)">
+    <button class="nav-btn" onclick="cambiarSeccion('votaciones', this)" style="position: relative;">
       <i data-lucide="vote" class="w-5 h-5"></i>
       <span>Votaciones</span>
+      <span id="badgeVotacionNav" style="display: none; position: absolute; top: 6px; right: 22%; width: 9px; height: 9px; background-color: #ef4444; border: 1.5px solid var(--bg-felt); border-radius: 50%;"></span>
     </button>
   </nav>
   <!-- ============================================================ -->
