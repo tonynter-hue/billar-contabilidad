@@ -800,6 +800,20 @@ function generarInformePDF() {
     });
   }
 
+  // 4. Asignar fecha al nombre del archivo PDF
+  const tituloOriginal = document.title;
+  const fechaArchivo = fechaStr.replace(/\//g, '-');
+  document.title = `Billar_Elcano_Contabilidad_${fechaArchivo}`;
+
+  // Restaurar el título original una vez guardado o cerrado el diálogo
+  window.addEventListener('afterprint', () => {
+    document.title = tituloOriginal;
+  }, { once: true });
+
+  setTimeout(() => {
+    document.title = tituloOriginal;
+  }, 2000);
+
   // Apertura de ventana nativa de impresión / guardado PDF
   window.print();
 }
