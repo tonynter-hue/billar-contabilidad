@@ -386,6 +386,14 @@ body.admin-activo .panel-admin-box {
   border-color: var(--gold-primary);
 }
 
+/* Icono del calendario en dorado brillante */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8) sepia(1) saturate(5) hue-rotate(5deg);
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.9;
+}
+
 .grid-2-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -473,6 +481,51 @@ body.admin-activo .panel-admin-box {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+/* =======================================================
+   BOTONES DE ACCIÓN: LÁPIZ Y PAPELERA (SOLO ADMIN)
+   ======================================================= */
+.acciones-mov-item {
+  display: none !important;
+}
+
+body.admin-activo .acciones-mov-item {
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+  margin-left: 8px;
+}
+
+.btn-accion-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-accion-icono.btn-editar {
+  background-color: rgba(212, 175, 55, 0.18);
+  border: 1px solid var(--gold-primary);
+  color: var(--gold-bright);
+}
+
+.btn-accion-icono.btn-editar:hover {
+  background-color: rgba(212, 175, 55, 0.35);
+}
+
+.btn-accion-icono.btn-borrar {
+  background-color: rgba(248, 113, 113, 0.18);
+  border: 1px solid var(--rojo-gasto);
+  color: var(--rojo-gasto);
+}
+
+.btn-accion-icono.btn-borrar:hover {
+  background-color: rgba(248, 113, 113, 0.35);
 }
 
 /* ==========================================

@@ -96,6 +96,12 @@
           <span>Registrar Movimiento en Caja</span>
         </h3>
 
+        <!-- Banner de modo edición -->
+        <div id="bannerEdicionGasto" style="display: none; background: rgba(212, 175, 55, 0.2); border: 1px solid var(--gold-primary); padding: 8px 12px; border-radius: 8px; margin-bottom: 12px; justify-content: space-between; align-items: center;">
+          <span style="font-size: 13px; font-weight: 700; color: var(--gold-bright);">✏️ Editando asiento seleccionado</span>
+          <button type="button" onclick="cancelarEdicionMovimiento()" style="background: none; border: none; color: #fff; font-size: 12px; text-decoration: underline; cursor: pointer;">Cancelar</button>
+        </div>
+
         <!-- Selector de Tipo: Gasto o Ingreso -->
         <div class="tipo-mov-selector">
           <button type="button" id="btnTipoGasto" class="btn-tipo-pill activo gasto" onclick="seleccionarTipoMov('gasto')">
@@ -123,7 +129,7 @@
             </div>
           </div>
 
-          <!-- Campo de foto: visible principalmente para gastos -->
+          <!-- Campo de foto -->
           <div id="bloqueFotoTicket">
             <label class="form-label">Ticket o Comprobante (Opcional en ingresos):</label>
             <input type="file" id="gastoFotoInput" accept="image/*" capture="environment" style="display: none;" onchange="procesarFotoTicket(event)" />
@@ -191,7 +197,7 @@
         <div id="contenedorListaSocios" class="space-y-2 mt-3"></div>
       </div>
     </section>
-    
+
     <!-- ==========================================
          MÓDULO 6: SECCIÓN 4 - PROPUESTAS Y VOTACIONES
          ========================================== -->
@@ -270,7 +276,7 @@
   </div>
 
   <!-- ==========================================
-       MÓDULO 9: MODAL INTRODUCCIÓN DE PIN (9292)
+       MÓDULO 9: MODAL INTRODUCCIÓN DE PIN
        ========================================== -->
   <div id="modalPin" class="modal-overlay">
     <div class="modal-pin-box">
@@ -280,20 +286,28 @@
       <h3>Acceso Administrador</h3>
       <p>Introduce las 4 cifras del PIN del Club</p>
 
-      <input type="password" id="inputPinAdmin" maxlength="4" placeholder="••••" class="pin-input font-mono" />
-      <div id="pinError" class="pin-error-txt"></div>
+      <form onsubmit="event.preventDefault(); verificarPinAdmin();">
+        <input 
+          type="password" 
+          id="inputPinAdmin" 
+          maxlength="4" 
+          placeholder="••••" 
+          class="pin-input font-mono" 
+          onkeydown="if(event.key === 'Enter') { event.preventDefault(); verificarPinAdmin(); }"
+          autocomplete="off"
+        />
+        <div id="pinError" class="pin-error-txt"></div>
 
-      <div class="flex-center gap-2 mt-4">
-        <button type="button" onclick="cerrarModalPin()" class="btn-cancelar">Cancelar</button>
-        <button type="button" onclick="verificarPinAdmin()" class="btn-guardar-oro px-5">Desbloquear</button>
-      </div>
+        <div class="flex-center gap-2 mt-4">
+          <button type="button" onclick="cerrarModalPin()" class="btn-cancelar">Cancelar</button>
+          <button type="submit" class="btn-guardar-oro px-5">Desbloquear</button>
+        </div>
+      </form>
     </div>
   </div>
+  <!--FIN DEL MODULO 9-->
 
-  <!-- Librerías oficiales Firebase Firestore (las mismas del torneo) -->
-  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
-
+  
   <!-- Script de la aplicación -->
   <script src="script.js"></script>
 </body>

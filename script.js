@@ -207,6 +207,7 @@ function eliminarMovimiento(id) {
 // MÓDULO 5: SECCIÓN 2 - GASTOS E INGRESOS CON TICKETS
 // ==========================================
 let tipoMovimientoActual = 'gasto';
+let editingMovId = null;
 
 function seleccionarTipoMov(tipo) {
   tipoMovimientoActual = tipo;
@@ -221,13 +222,13 @@ function seleccionarTipoMov(tipo) {
     btnIngreso.classList.remove('activo');
     lblConcepto.textContent = "Concepto del gasto:";
     inputConcepto.placeholder = "Ej: Paño Simonis, tizas, suelas...";
-    btnGuardar.textContent = "Guardar Gasto en Caja";
+    btnGuardar.textContent = editingMovId ? "Actualizar Gasto" : "Guardar Gasto en Caja";
   } else {
     btnIngreso.classList.add('activo');
     btnGasto.classList.remove('activo');
     lblConcepto.textContent = "Concepto del ingreso / entrada:";
-    inputConcepto.placeholder = "Ej: Efectivo inicial en caja, derrama paño...";
-    btnGuardar.textContent = "Guardar Ingreso en Caja";
+    inputConcepto.placeholder = "Ej: Fondo inicial de caja, aportación socios...";
+    btnGuardar.textContent = editingMovId ? "Actualizar Ingreso" : "Guardar Ingreso en Caja";
   }
 }
 
@@ -273,10 +274,60 @@ function renderizarGastos() {
       <div style="font-size:18px; font-weight:900; color:${colorCifra};" class="font-mono">
         ${signo}${formatearEuro(m.importe)}
       </div>
-      <button class="btn-borrar-item" onclick="eliminarMovimiento(${m.id})">Borrar</button>
+      <div class="acciones-mov-item">
+        <button type="button" class="btn-accion-icono btn-editar" onclick="editarMovimiento('${m.id}')" title="Editar asiento">
+          <i data-lucide="pencil" class="w-4 h-4"></i>
+        </button>
+        <button type="button" class="btn-accion-icono btn-borrar" onclick="eliminarMovimiento('${m.id}')" title="Borrar asiento">
+          <i data-lucide="trash-2" class="w-4 h-4"></i>
+        </button>
+      </div>
     `;
     contenedor.appendChild(tarjeta);
   });
+
+  // Renderiza los iconos de Lucide (lápiz y papelera)
+  lucide.createIcons();
+}
+
+function editarMovimiento(id) {
+  if (!modoAdmin) {
+    clickBotonAdmin();
+    return;
+  }
+
+  const m = (appData.movimientos || []).find(item => String(item.id) === String(id));
+  if (!m) return;
+
+  editingMovId = m.id;
+  seleccionarTipoMov(m.tipo || 'gasto');
+  document.getElementById('gastoConcepto').value = m.concepto;
+  document.getElementById('gastoImporte').value = m.importe;
+  document.getElementById('gastoFecha').value = m.fecha;
+
+  if (m.ticket) {
+    fotoTicketBase64 = m.ticket;
+    document.getElementById('imgPrevia').src = m.ticket;
+    document.getElementById('vistaPreviaTicket').style.display = 'block';
+  } else {
+    quitarFotoTicket();
+  }
+
+  const banner = document.getElementById('bannerEdicionGasto');
+  if (banner) banner.style.display = 'flex';
+  document.getElementById('btnGuardarMov').textContent = (m.tipo === 'ingreso') ? "Actualizar Ingreso" : "Actualizar Gasto";
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function cancelarEdicionMovimiento() {
+  editingMovId = null;
+  document.getElementById('gastoConcepto').value = '';
+  document.getElementById('gastoImporte').value = '';
+  quitarFotoTicket();
+  establecerFechaHoy();
+  const banner = document.getElementById('bannerEdicionGasto');
+  if (banner) banner.style.display = 'none';
+  seleccionarTipoMov(tipoMovimientoActual);
 }
 
 function procesarFotoTicket(event) {
@@ -328,22 +379,56 @@ function guardarNuevoMovimiento(event) {
     return;
   }
 
-  const nuevoMov = {
-    id: Date.now(),
-    fecha: fecha,
-    concepto: concepto,
-    tipo: tipoMovimientoActual, // 'gasto' o 'ingreso'
-    importe: importe,
-    ticket: fotoTicketBase64
-  };
+  if (editingMovId) {
+    const idx = appData.movimientos.findIndex(item => String(item.id) === String(editingMovId));
+    if (idx !== -1) {
+      appData.movimientos[idx] = {
+        ...appData.movimientos[idx],
+        fecha: fecha,
+        concepto: concepto,
+        tipo: tipoMovimientoActual,
+        importe: importe,
+        ticket: fotoTicketBase64
+      };
+    }
+    cancelarEdicionMovimiento();
+  } else {
+    const nuevoMov = {
+      id: "mov_" + Date.now(),
+      fecha: fecha,
+      concepto: concepto,
+      tipo: tipoMovimientoActual,
+      importe: importe,
+      ticket: fotoTicketBase64
+    };
+    appData.movimientos.unshift(nuevoMov);
+    document.getElementById('gastoConcepto').value = '';
+    document.getElementById('gastoImporte').value = '';
+    quitarFotoTicket();
+    establecerFechaHoy();
+  }
 
-  appData.movimientos.unshift(nuevoMov);
   subirEstadoAFirebase();
+}
 
-  document.getElementById('gastoConcepto').value = '';
-  document.getElementById('gastoImporte').value = '';
-  quitarFotoTicket();
-  establecerFechaHoy();
+function eliminarMovimiento(id) {
+  if (!modoAdmin) {
+    clickBotonAdmin();
+    return;
+  }
+
+  const m = (appData.movimientos || []).find(item => String(item.id) === String(id));
+  const desc = m ? `"${m.concepto}" (${formatearEuro(m.importe)})` : "este asiento";
+
+  if (!confirm(`¿Estás seguro de que deseas eliminar ${desc}?\nEsta acción lo borrará de la caja en todos los dispositivos.`)) {
+    return;
+  }
+
+  appData.movimientos = appData.movimientos.filter(item => String(item.id) !== String(id));
+  if (editingMovId && String(editingMovId) === String(id)) {
+    cancelarEdicionMovimiento();
+  }
+  subirEstadoAFirebase();
 }
 
 function abrirVisor(src) {
