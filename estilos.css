@@ -892,12 +892,12 @@ nav.bottom-nav {
 }
 
 body.admin-activo .btn-exportar-pill {
-  display: inline-flex;
+  display: inline-flex !important;
 }
 
-/* Ocultar plantilla en vista de pantalla normal */
+/* Ocultar plantilla en vista normal de pantalla */
 .solo-impresion {
-  display: none;
+  display: none !important;
 }
 
 /* ============================================================ */
@@ -911,7 +911,7 @@ body.admin-activo .btn-exportar-pill {
     font-size: 11pt !important;
   }
 
-  /* Ocultar toda la interfaz de la aplicación */
+  /* Ocultar absolutamente toda la app */
   #main-header,
   #bannerAdmin,
   .bottom-nav,
@@ -924,8 +924,9 @@ body.admin-activo .btn-exportar-pill {
     display: none !important;
   }
 
-  /* Mostrar exclusivamente el bloque formal */
-  .solo-impresion {
+  /* Mostrar únicamente el informe */
+  .solo-impresion,
+  #informeImpresionPDF {
     display: block !important;
     padding: 8mm 10mm;
   }

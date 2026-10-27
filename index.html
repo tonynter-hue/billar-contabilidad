@@ -20,8 +20,8 @@
   <!-- Iconos Lucide -->
   <script src="https://unpkg.com/lucide@latest"></script>
 
-  <!-- Estilos del Club -->
-  <link rel="stylesheet" href="estilos.css" />
+  <!-- Estilos del Club con versión anti-caché -->
+  <link rel="stylesheet" href="estilos.css?v=2" />
 </head>
 <body class="selection:bg-gold-500 selection:text-baize-950">
 
@@ -39,7 +39,7 @@
       </div>
 
       <div style="display: flex; align-items: center; gap: 8px;">
-        <button id="btnExportarPDF" class="btn-exportar-pill" onclick="generarInformePDF()" title="Descargar balance en PDF">
+        <button id="btnExportarPDF" class="btn-exportar-pill" style="display: none;" onclick="generarInformePDF()" title="Descargar balance en PDF">
           <i data-lucide="file-text" class="w-4 h-4"></i>
           <span>Informe PDF</span>
         </button>
@@ -290,7 +290,7 @@
    <!-- ============================================================ -->
     <!-- INICIO MÓDULO 11: PLANTILLA DE IMPRESIÓN Y EXPORTACIÓN PDF  -->
     <!-- ============================================================ -->
-    <div id="informeImpresionPDF" class="solo-impresion">
+    <div id="informeImpresionPDF" class="solo-impresion" style="display: none;">
       <div class="print-header">
         <div>
           <h1 class="print-titulo">BILLAR ELCANO</h1>
@@ -339,7 +339,6 @@
     <!-- FIN MÓDULO 11: PLANTILLA DE IMPRESIÓN Y EXPORTACIÓN PDF     -->
     <!-- ============================================================ -->
 
-    
   <!-- ============================================================ -->
   <!-- INICIO MÓDULO 7: BARRA DE NAVEGACIÓN INFERIOR               -->
   <!-- ============================================================ -->
