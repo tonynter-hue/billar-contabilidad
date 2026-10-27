@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="icon" type="image/png" sizes="192x192" href="logo-192.png" />
 
-  <!-- Tipografías de alta legibilidad -->
+  <!-- Tipografías -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;800&family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
@@ -25,9 +25,9 @@
 </head>
 <body class="selection:bg-gold-500 selection:text-baize-950">
 
-  <!-- ==========================================
-       MÓDULO 1: CABECERA DEL CLUB Y BOTÓN ADMIN
-       ========================================== -->
+  <!-- ============================================================ -->
+  <!-- INICIO MÓDULO 1: CABECERA Y BOTÓN ADMIN                     -->
+  <!-- ============================================================ -->
   <header id="main-header">
     <div class="header-container">
       <div class="header-brand">
@@ -44,18 +44,26 @@
       </button>
     </div>
   </header>
+  <!-- ============================================================ -->
+  <!-- FIN MÓDULO 1: CABECERA Y BOTÓN ADMIN                        -->
+  <!-- ============================================================ -->
 
-  <!-- ==========================================
-       MÓDULO 2: BANNER AVISO MODO ADMIN
-       ========================================== -->
+
+  <!-- ============================================================ -->
+  <!-- INICIO MÓDULO 2: BANNER AVISO MODO ADMIN                    -->
+  <!-- ============================================================ -->
   <div id="bannerAdmin" class="banner-admin">
     ⚠️ MODO ADMINISTRADOR ACTIVO (Edición y altas permitidas)
   </div>
+  <!-- ============================================================ -->
+  <!-- FIN MÓDULO 2: BANNER AVISO MODO ADMIN                       -->
+  <!-- ============================================================ -->
+
 
   <main>
-    <!-- ==========================================
-         MÓDULO 3: SECCIÓN 1 - BOTE Y CAJA
-         ========================================== -->
+    <!-- ============================================================ -->
+    <!-- INICIO MÓDULO 3: SECCIÓN 1 - BOTE Y CAJA                    -->
+    <!-- ============================================================ -->
     <section id="sec-bote" class="seccion activa">
       <!-- Tarjeta Saldo Principal -->
       <div class="tarjeta-saldo-dorada">
@@ -84,10 +92,14 @@
         <ul class="lista-movimientos" id="listaMovimientosBote"></ul>
       </div>
     </section>
+    <!-- ============================================================ -->
+    <!-- FIN MÓDULO 3: SECCIÓN 1 - BOTE Y CAJA                       -->
+    <!-- ============================================================ -->
 
-    <!-- ==========================================
-         MÓDULO 4: SECCIÓN 2 - GASTOS E INGRESOS
-         ========================================== -->
+
+    <!-- ============================================================ -->
+    <!-- INICIO MÓDULO 4: SECCIÓN 2 - GASTOS E INGRESOS              -->
+    <!-- ============================================================ -->
     <section id="sec-gastos" class="seccion">
       <!-- Panel de Registro exclusivo Admin -->
       <div class="panel-admin-box">
@@ -156,10 +168,14 @@
         <div id="listaGastosDetalle" class="space-y-3 mt-3"></div>
       </div>
     </section>
+    <!-- ============================================================ -->
+    <!-- FIN MÓDULO 4: SECCIÓN 2 - GASTOS E INGRESOS                 -->
+    <!-- ============================================================ -->
 
-    <!-- ==========================================
-         MÓDULO 5: SECCIÓN 3 - BILLARISTAS
-         ========================================== -->
+
+    <!-- ============================================================ -->
+    <!-- INICIO MÓDULO 5: SECCIÓN 3 - BILLARISTAS                    -->
+    <!-- ============================================================ -->
     <section id="sec-socios" class="seccion">
       <!-- Panel de Gestión exclusivo Admin -->
       <div class="panel-admin-box">
@@ -197,12 +213,16 @@
         <div id="contenedorListaSocios" class="space-y-2 mt-3"></div>
       </div>
     </section>
+    <!-- ============================================================ -->
+    <!-- FIN MÓDULO 5: SECCIÓN 3 - BILLARISTAS                       -->
+    <!-- ============================================================ -->
 
-    <!-- ==========================================
-         MÓDULO 6: SECCIÓN 4 - PROPUESTAS Y VOTACIONES
-         ========================================== -->
+
+    <!-- ============================================================ -->
+    <!-- INICIO MÓDULO 6: SECCIÓN 4 - PROPUESTAS Y VOTACIONES        -->
+    <!-- ============================================================ -->
     <section id="sec-votaciones" class="seccion">
-      <!-- Formulario para que CUALQUIER SOCIO proponga -->
+      <!-- Formulario de propuestas -->
       <div class="felt-card p-4 mb-4 border-gold">
         <h3 class="panel-titulo">
           <i data-lucide="lightbulb" class="w-5 h-5 text-gold-400"></i>
@@ -219,13 +239,13 @@
             <textarea id="propuestaDesc" class="form-input" rows="2" placeholder="Ej: Cuestan unos 80€ en Billares Sevilla y mejorarán la mesa." required></textarea>
           </div>
 
-          <!-- Si es Admin puede fijar la fecha al momento -->
+          <!-- Campo de fecha: solo para Admin -->
           <div id="grupoFechaAdmin" class="solo-admin">
             <label class="form-label text-gold-400">Fecha límite de votación (Admin):</label>
             <input type="date" id="propuestaLimite" class="form-input font-mono" />
           </div>
 
-          <!-- Aviso visible para socios normales -->
+          <!-- Aviso socios normales -->
           <p id="avisoFechaSocio" class="text-xs text-slate-300">
             📅 La fecha límite de votación la establecerá el administrador al revisarla.
           </p>
@@ -243,11 +263,15 @@
         <div id="contenedorVotaciones" class="space-y-4 mt-3"></div>
       </div>
     </section>
+    <!-- ============================================================ -->
+    <!-- FIN MÓDULO 6: SECCIÓN 4 - PROPUESTAS Y VOTACIONES           -->
+    <!-- ============================================================ -->
   </main>
 
-  <!-- ==========================================
-       MÓDULO 7: BARRA DE NAVEGACIÓN INFERIOR
-       ========================================== -->
+
+  <!-- ============================================================ -->
+  <!-- INICIO MÓDULO 7: BARRA DE NAVEGACIÓN INFERIOR               -->
+  <!-- ============================================================ -->
   <nav class="bottom-nav">
     <button class="nav-btn active" onclick="cambiarSeccion('bote', this)">
       <i data-lucide="wallet" class="w-5 h-5"></i>
@@ -266,18 +290,26 @@
       <span>Votaciones</span>
     </button>
   </nav>
+  <!-- ============================================================ -->
+  <!-- FIN MÓDULO 7: BARRA DE NAVEGACIÓN INFERIOR                  -->
+  <!-- ============================================================ -->
 
-  <!-- ==========================================
-       MÓDULO 8: MODAL VISOR DE TICKET AMPLIADO
-       ========================================== -->
+
+  <!-- ============================================================ -->
+  <!-- INICIO MÓDULO 8: MODAL VISOR DE TICKET AMPLIADO             -->
+  <!-- ============================================================ -->
   <div id="modalVisor" class="modal-visor" onclick="cerrarVisor()">
     <img id="imgVisorCompleta" src="" alt="Ticket Ampliado" onclick="event.stopPropagation()" />
     <button class="btn-cerrar-visor" onclick="cerrarVisor()">✕ Cerrar Ticket</button>
   </div>
+  <!-- ============================================================ -->
+  <!-- FIN MÓDULO 8: MODAL VISOR DE TICKET AMPLIADO                -->
+  <!-- ============================================================ -->
 
-  <!-- ==========================================
-       MÓDULO 9: MODAL INTRODUCCIÓN DE PIN
-       ========================================== -->
+
+  <!-- ============================================================ -->
+  <!-- INICIO MÓDULO 9: MODAL INTRODUCCIÓN DE PIN                  -->
+  <!-- ============================================================ -->
   <div id="modalPin" class="modal-overlay">
     <div class="modal-pin-box">
       <div class="icon-shield-wrap">
@@ -305,10 +337,20 @@
       </form>
     </div>
   </div>
-  <!--FIN DEL MODULO 9-->
+  <!-- ============================================================ -->
+  <!-- FIN MÓDULO 9: MODAL INTRODUCCIÓN DE PIN                     -->
+  <!-- ============================================================ -->
 
-  
-  <!-- Script de la aplicación -->
+
+  <!-- ============================================================ -->
+  <!-- INICIO MÓDULO 10: SCRIPTS FIREBASE Y APP                    -->
+  <!-- ============================================================ -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
   <script src="script.js"></script>
+  <!-- ============================================================ -->
+  <!-- FIN MÓDULO 10: SCRIPTS FIREBASE Y APP                       -->
+  <!-- ============================================================ -->
+
 </body>
 </html>

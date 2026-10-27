@@ -1,7 +1,6 @@
-// ==========================================
-// MÓDULO 1: CONFIGURACIÓN FIREBASE FIRESTORE & PIN
-// ==========================================
-// Usamos el mismo proyecto del club pero en el documento separado 'contabilidad'
+// ============================================================
+// INICIO MÓDULO 1: CONFIGURACIÓN FIREBASE FIRESTORE & PIN
+// ============================================================
 const firebaseConfig = {
   apiKey: "AIzaSyC8TnUjhlyhz5VWlkdfiw57-xGX_1_8zcA",
   authDomain: "memorial-quini-elcano.firebaseapp.com",
@@ -11,25 +10,20 @@ const firebaseConfig = {
   appId: "1:166426350048:web:9d9af0e329454a60f3db85"
 };
 
-if (!firebase.apps.length) {
+if (typeof firebase !== 'undefined' && !firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
-const db = firebase.firestore();
+const db = (typeof firebase !== 'undefined') ? firebase.firestore() : null;
 
-// Mismo PIN de administrador oficial del torneo
 const ADMIN_PIN = "1234";
 let modoAdmin = false;
 let fotoTicketBase64 = "";
 
 const STORAGE_KEY = "club_elcano_contabilidad_v1";
 
-// Datos base con los socios del Memorial Quini
 const datosPorDefecto = {
   saldoInicial: 0.00,
-  movimientos: [
-    { id: 1, fecha: "2026-10-24", concepto: "Cuota mensual socios (4)", tipo: "ingreso", importe: 40.00, ticket: "" },
-    { id: 2, fecha: "2026-10-20", concepto: "Caja de tizas verdes máster", tipo: "gasto", importe: 12.50, ticket: "" }
-  ],
+  movimientos: [],
   socios: [
     { id: 1, nombre: "José Gonzalez", estado: "pagado" },
     { id: 2, nombre: "Juan Rguez", estado: "pendiente" },
@@ -44,24 +38,24 @@ const datosPorDefecto = {
     { id: 11, nombre: "Alfonso Santos", estado: "pendiente" },
     { id: 12, nombre: "Paco Vidal", estado: "pendiente" }
   ],
-  votaciones: [
-    {
-      id: 1,
-      titulo: "Renovación de paño Simonis 300",
-      descripcion: "Presupuesto para cambiar el paño de la mesa principal antes de semifinales.",
-      limite: "2026-11-15",
-      favor: 8,
-      contra: 1
-    }
-  ]
+  votaciones: []
 };
 
 let appData = { ...datosPorDefecto };
+// ============================================================
+// FIN MÓDULO 1: CONFIGURACIÓN FIREBASE FIRESTORE & PIN
+// ============================================================
 
-// ==========================================
-// MÓDULO 2: SINCRONIZACIÓN EN TIEMPO REAL (FIRESTORE)
-// ==========================================
+
+// ============================================================
+// INICIO MÓDULO 2: SINCRONIZACIÓN EN TIEMPO REAL (FIRESTORE)
+// ============================================================
 function initRealtimeSync() {
+  if (!db) {
+    cargarCopiaLocal();
+    return;
+  }
+
   db.collection("bote").doc("contabilidad")
     .onSnapshot((doc) => {
       if (doc.exists) {
@@ -74,7 +68,6 @@ function initRealtimeSync() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
         renderizarTodo();
       } else {
-        // Primera vez: sube los datos iniciales a Firestore
         subirEstadoAFirebase();
       }
     }, (error) => {
@@ -84,6 +77,7 @@ function initRealtimeSync() {
 }
 
 function subirEstadoAFirebase() {
+  if (!db) return;
   db.collection("bote").doc("contabilidad").set({
     saldoInicial: appData.saldoInicial,
     movimientos: appData.movimientos,
@@ -98,7 +92,11 @@ function subirEstadoAFirebase() {
 function cargarCopiaLocal() {
   const local = localStorage.getItem(STORAGE_KEY);
   if (local) {
-    appData = JSON.parse(local);
+    try {
+      appData = JSON.parse(local);
+    } catch (e) {
+      appData = { ...datosPorDefecto };
+    }
   }
   renderizarTodo();
 }
@@ -110,7 +108,6 @@ function renderizarTodo() {
   renderizarVotaciones();
 }
 
-// Formateadores
 function formatearEuro(cantidad) {
   return Number(cantidad).toLocaleString('es-ES', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
 }
@@ -120,10 +117,14 @@ function formatearFecha(fechaStr) {
   const partes = fechaStr.split('-');
   return partes.length === 3 ? `${partes[2]}/${partes[1]}/${partes[0]}` : fechaStr;
 }
+// ============================================================
+// FIN MÓDULO 2: SINCRONIZACIÓN EN TIEMPO REAL (FIRESTORE)
+// ============================================================
 
-// ==========================================
-// MÓDULO 3: NAVEGACIÓN ENTRE PESTAÑAS
-// ==========================================
+
+// ============================================================
+// INICIO MÓDULO 3: NAVEGACIÓN ENTRE PESTAÑAS
+// ============================================================
 const TITULOS_SECCION = {
   bote: "Bote y Saldo Actual",
   gastos: "Gastos e Ingresos",
@@ -145,12 +146,16 @@ function cambiarSeccion(seccionId, boton) {
   if (seccionId === 'gastos') renderizarGastos();
   if (seccionId === 'socios') renderizarSocios();
   if (seccionId === 'votaciones') renderizarVotaciones();
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
+// ============================================================
+// FIN MÓDULO 3: NAVEGACIÓN ENTRE PESTAÑAS
+// ============================================================
 
-// ==========================================
-// MÓDULO 4: SECCIÓN 1 - BOTE
-// ==========================================
+
+// ============================================================
+// INICIO MÓDULO 4: SECCIÓN 1 - BOTE
+// ============================================================
 function renderizarBote() {
   const movs = appData.movimientos || [];
   let totalIngresos = 0, totalGastos = 0;
@@ -189,23 +194,18 @@ function renderizarBote() {
         <span class="mov-fecha">${formatearFecha(mov.fecha)}</span>
       </div>
       <div class="mov-importe ${claseColor} font-mono">${signo}${formatearEuro(mov.importe)}</div>
-      <button class="btn-borrar-item" onclick="eliminarMovimiento(${mov.id})">Borrar</button>
     `;
     listaUl.appendChild(li);
   });
 }
+// ============================================================
+// FIN MÓDULO 4: SECCIÓN 1 - BOTE
+// ============================================================
 
-function eliminarMovimiento(id) {
-  if (!modoAdmin) return;
-  if (!confirm("¿Deseas eliminar este registro contable?")) return;
 
-  appData.movimientos = appData.movimientos.filter(m => m.id !== id);
-  subirEstadoAFirebase();
-}
-
-// ==========================================
-// MÓDULO 5: SECCIÓN 2 - GASTOS E INGRESOS CON TICKETS
-// ==========================================
+// ============================================================
+// INICIO MÓDULO 5: SECCIÓN 2 - GASTOS E INGRESOS CON TICKETS
+// ============================================================
 let tipoMovimientoActual = 'gasto';
 let editingMovId = null;
 
@@ -268,7 +268,7 @@ function renderizarGastos() {
       <div style="flex:1;">
         <div style="font-weight:700; color:#fff;">${badgeTipo} ${m.concepto}</div>
         <div style="font-size:13px; color:rgba(203,213,225,0.7);">
-          ${formatearFecha(m.fecha)} ${m.ticket ? '• <span style="color:var(--gold-bright); font-weight:700;">Ver ticket</span>' : ''}
+          ${formatearFecha(m.fecha)} ${m.ticket ? '• <span style="color:var(--gold-bright); font-weight:700; cursor:pointer;" onclick="abrirVisor(\'' + m.ticket + '\')">Ver ticket</span>' : ''}
         </div>
       </div>
       <div style="font-size:18px; font-weight:900; color:${colorCifra};" class="font-mono">
@@ -286,8 +286,7 @@ function renderizarGastos() {
     contenedor.appendChild(tarjeta);
   });
 
-  // Renderiza los iconos de Lucide (lápiz y papelera)
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 }
 
 function editarMovimiento(id) {
@@ -449,10 +448,14 @@ function establecerFechaHoy() {
   const cLimite = document.getElementById('propuestaLimite');
   if (cLimite) cLimite.value = hoy;
 }
+// ============================================================
+// FIN MÓDULO 5: SECCIÓN 2 - GASTOS E INGRESOS CON TICKETS     
+// ============================================================
 
-// ==========================================
-// MÓDULO 6: SECCIÓN 3 - BILLARISTAS Y APORTACIONES
-// ==========================================
+
+// ============================================================
+// INICIO MÓDULO 6: SECCIÓN 3 - BILLARISTAS Y APORTACIONES     
+// ============================================================
 function renderizarSocios() {
   const socios = appData.socios || [];
   const pagados = socios.filter(s => s.estado === 'pagado').length;
@@ -533,10 +536,14 @@ function reiniciarCuotas() {
   appData.socios.forEach(s => s.estado = 'pendiente');
   subirEstadoAFirebase();
 }
+// ============================================================
+// FIN MÓDULO 6: SECCIÓN 3 - BILLARISTAS Y APORTACIONES        
+// ============================================================
 
-// ==========================================
-// MÓDULO 7: SECCIÓN 4 - PROPUESTAS Y VOTACIONES
-// ==========================================
+
+// ============================================================
+// INICIO MÓDULO 7: SECCIÓN 4 - PROPUESTAS Y VOTACIONES        
+// ============================================================
 function renderizarVotaciones() {
   const votaciones = appData.votaciones || [];
   document.getElementById('numVotacionesTotal').textContent = `(${votaciones.length})`;
@@ -557,7 +564,6 @@ function renderizarVotaciones() {
     const total = favor + contra;
     const pctFavor = total > 0 ? Math.round((favor / total) * 100) : 50;
 
-    // Voto guardado en el teléfono del socio ('favor', 'contra' o null)
     const yaVoto = localStorage.getItem(`voto_propuesta_${prop.id}`);
 
     const textoLimite = prop.limite 
@@ -568,7 +574,6 @@ function renderizarVotaciones() {
       ? 'background: rgba(250, 204, 21, 0.15); color: var(--gold-bright); border: 1px solid rgba(250, 204, 21, 0.4);'
       : 'background: rgba(248, 113, 113, 0.15); color: var(--rojo-gasto); border: 1px solid rgba(248, 113, 113, 0.4);';
 
-    // Textos y resaltados dinámicos según lo que votó
     const textoBtnFavor = yaVoto === 'favor' ? '✓ Votaste A favor' : (yaVoto === 'contra' ? 'Cambiar a A favor' : '👍 A favor');
     const textoBtnContra = yaVoto === 'contra' ? '✓ Votaste En contra' : (yaVoto === 'favor' ? 'Cambiar a En contra' : '👎 En contra');
 
@@ -625,22 +630,17 @@ function emitirVoto(idPropuesta, sentido) {
   const claveVoto = `voto_propuesta_${idPropuesta}`;
   const votoAnterior = localStorage.getItem(claveVoto);
 
-  // Si pulsa el mismo botón que ya tiene votado, no hace falta recalcular
-  if (votoAnterior === sentido) {
-    return;
-  }
+  if (votoAnterior === sentido) return;
 
   const prop = (appData.votaciones || []).find(v => v.id === idPropuesta);
   if (!prop) return;
 
-  // Si ya había votado antes la otra opción, restamos el voto antiguo
   if (votoAnterior === 'favor') {
     prop.favor = Math.max(0, (prop.favor || 0) - 1);
   } else if (votoAnterior === 'contra') {
     prop.contra = Math.max(0, (prop.contra || 0) - 1);
   }
 
-  // Sumamos el nuevo sentido de voto
   if (sentido === 'favor') prop.favor = (prop.favor || 0) + 1;
   if (sentido === 'contra') prop.contra = (prop.contra || 0) + 1;
 
@@ -719,10 +719,14 @@ function eliminarPropuesta(id) {
   localStorage.removeItem(`voto_propuesta_${id}`);
   subirEstadoAFirebase();
 }
+// ============================================================
+// FIN MÓDULO 7: SECCIÓN 4 - PROPUESTAS Y VOTACIONES           
+// ============================================================
 
-// ==========================================
-// MÓDULO 8: CONTROL DE PIN Y ADMINISTRADOR
-// ==========================================
+
+// ============================================================
+// INICIO MÓDULO 8: CONTROL DE PIN Y ADMINISTRADOR             
+// ============================================================
 function clickBotonAdmin() {
   if (modoAdmin) {
     modoAdmin = false;
@@ -767,16 +771,23 @@ function actualizarEstadoAdminUI() {
     txt.textContent = "Acceso PIN";
     icon.setAttribute('data-lucide', 'lock');
   }
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
   renderizarTodo();
 }
+// ============================================================
+// FIN MÓDULO 8: CONTROL DE PIN Y ADMINISTRADOR                
+// ============================================================
 
-// ==========================================
-// MÓDULO 9: INICIALIZACIÓN
-// ==========================================
+
+// ============================================================
+// INICIO MÓDULO 9: INICIALIZACIÓN                             
+// ============================================================
 document.addEventListener("DOMContentLoaded", () => {
   establecerFechaHoy();
   cargarCopiaLocal();
   initRealtimeSync();
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 });
+// ============================================================
+// FIN MÓDULO 9: INICIALIZACIÓN                                
+// ============================================================
