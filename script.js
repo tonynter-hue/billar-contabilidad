@@ -347,7 +347,10 @@ function procesarFotoTicket(event) {
 
 function quitarFotoTicket() {
   fotoTicketBase64 = "";
-  document.getElementById('gastoFotoInput').value = "";
+  const inputCam = document.getElementById('gastoFotoCamara');
+  const inputGal = document.getElementById('gastoFotoGaleria');
+  if (inputCam) inputCam.value = "";
+  if (inputGal) inputGal.value = "";
   document.getElementById('vistaPreviaTicket').style.display = 'none';
   document.getElementById('imgPrevia').src = "";
 }
