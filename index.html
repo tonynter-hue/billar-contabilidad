@@ -21,7 +21,7 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 
   <!-- Estilos del Club con versión anti-caché -->
- <link rel="stylesheet" href="estilos.css?v=5" />
+  <link rel="stylesheet" href="estilos.css?v=6" />
 </head>
 <body class="selection:bg-gold-500 selection:text-baize-950">
 
@@ -134,7 +134,7 @@
         <form onsubmit="guardarNuevoMovimiento(event)" class="space-y-3 mt-3">
           <div>
             <label class="form-label" id="lblConcepto">Concepto del gasto:</label>
-            <input type="text" id="gastoConcepto" class="form-input" placeholder="Ej: Paño Simonis, tizas, sueras..." required />
+            <input type="text" id="gastoConcepto" class="form-input" placeholder="Ej: Paño Simonis, tizas, suelas..." required />
           </div>
 
           <div class="grid-2-col">
@@ -319,12 +319,71 @@
   <!-- MÓDULO 8: BARRA DE NAVEGACIÓN INFERIOR                       -->
   <!-- ============================================================ -->
   <nav class="bottom-nav">
-    <button class="nav-btn" onclick="cambiarSeccion('bote', this)">
+    <button class="nav-btn active" onclick="cambiarSeccion('bote', this)">
       <i data-lucide="wallet" class="w-5 h-5"></i>
       <span>Bote</span>
     </button>
-    <button class="nav-btn active" onclick="cambiarSeccion('gastos', this)">
+    <button class="nav-btn" onclick="cambiarSeccion('gastos', this)">
       <i data-lucide="receipt" class="w-5 h-5"></i>
       <span>Gastos/Ingr.</span>
     </button>
-    <button class="nav-btn" onclick="cambiarSeccion('soci
+    <button class="nav-btn" onclick="cambiarSeccion('socios', this)">
+      <i data-lucide="users" class="w-5 h-5"></i>
+      <span>Billaristas</span>
+    </button>
+    <button class="nav-btn" onclick="cambiarSeccion('votaciones', this)" style="position: relative;">
+      <i data-lucide="vote" class="w-5 h-5"></i>
+      <span>Votaciones</span>
+      <span id="badgeVotacionNav" style="display: none; position: absolute; top: 6px; right: 22%; width: 9px; height: 9px; background-color: #ef4444; border: 1.5px solid var(--bg-felt); border-radius: 50%;"></span>
+    </button>
+  </nav>
+
+  <!-- ============================================================ -->
+  <!-- MÓDULO 9: MODALES (VISOR TICKET Y CONTROL PIN)               -->
+  <!-- ============================================================ -->
+  <!-- Sección 9.1: Visor Ticket Ampliado -->
+  <div id="modalVisor" class="modal-visor" onclick="cerrarVisor()">
+    <img id="imgVisorCompleta" src="" alt="Ticket Ampliado" onclick="event.stopPropagation()" />
+    <button class="btn-cerrar-visor" onclick="cerrarVisor()">✕ Cerrar Ticket</button>
+  </div>
+
+  <!-- Sección 9.2: Modal Introducción de PIN -->
+  <div id="modalPin" class="modal-overlay">
+    <div class="modal-pin-box">
+      <div class="icon-shield-wrap">
+        <i data-lucide="shield-check" class="w-7 h-7 text-gold-400"></i>
+      </div>
+      <h3>Acceso Administrador</h3>
+      <p>Introduce las 4 cifras del PIN del Club</p>
+
+      <form onsubmit="event.preventDefault(); verificarPinAdmin();">
+        <input 
+          type="password" 
+          id="inputPinAdmin" 
+          maxlength="4" 
+          placeholder="••••" 
+          class="pin-input font-mono" 
+          onkeydown="if(event.key === 'Enter') { event.preventDefault(); verificarPinAdmin(); }"
+          autocomplete="off"
+        />
+        <div id="pinError" class="pin-error-txt"></div>
+
+        <div class="flex-center gap-2 mt-4">
+          <button type="button" onclick="cerrarModalPin()" class="btn-cancelar">Cancelar</button>
+          <button type="submit" class="btn-guardar-oro px-5">Desbloquear</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================================ -->
+  <!-- MÓDULO 10: SCRIPTS FIREBASE Y APP                            -->
+  <!-- ============================================================ -->
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore-compat.js"></script>
+  <script src="script.js?v=6"></script>
+  <!-- ============================================================ -->
+  <!-- FIN DEL DOCUMENTO: index.html                                -->
+  <!-- ============================================================ -->
+</body>
+</html>
